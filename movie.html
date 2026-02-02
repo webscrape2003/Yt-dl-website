@@ -3,157 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vajira Movie Detailer Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Vajira Movie Detailer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --primary: #ff1e2a; --bg: #080808; --card: #151515; --text: #ffffff; --accent: #38bdf8; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
-        .url-header { padding: 25px 20px; background: rgba(13, 13, 13, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-        .input-group { max-width: 900px; margin: 0 auto; display: flex; gap: 10px; background: #000; padding: 6px; border-radius: 14px; border: 1px solid #333; }
-        #urlInput { flex: 1; background: transparent; border: none; color: white; padding: 12px 15px; outline: none; font-size: 0.95rem; }
-        #fetchBtn { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .movie-main { display: grid; grid-template-columns: 320px 1fr; gap: 40px; margin-bottom: 50px; }
-        .poster { width: 100%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid #333; }
-        .badge-row { display: flex; gap: 12px; align-items: center; margin: 15px 0; }
-        .imdb-badge { background: #f5c518; color: #000; padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 0.9rem; }
-        .meta-tag { color: #888; font-size: 0.9rem; font-weight: 600; }
-        .description { color: #bbb; font-size: 1.1rem; line-height: 1.7; margin: 25px 0; }
-        .section-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); font-weight: 800; margin-bottom: 15px; display: block; }
-        .gallery-wrapper { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; }
-        .gallery-wrapper img { height: 180px; border-radius: 12px; object-fit: cover; border: 1px solid #333; cursor: pointer; }
-        .cast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 40px; }
-        .cast-card { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #222; }
-        .download-card { background: var(--card); border-radius: 20px; padding: 30px; border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .dl-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #252525; }
-        .dl-action-btn { background: #222; color: #fff; border: 1px solid #333; padding: 10px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .dl-action-btn:hover { background: var(--primary); border-color: var(--primary); }
-        @media (max-width: 850px) { .movie-main { grid-template-columns: 1fr; } .poster { max-width: 280px; margin: 0 auto; display: block; } }
+        body { background-color: #121212; color: #e0e0e0; font-family: sans-serif; }
+        .movie-card { background-color: #1e1e1e; border: 1px solid #333; border-radius: 8px; }
+        .btn-download { background-color: #e50914; transition: 0.3s; }
+        .btn-download:hover { background-color: #b20710; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-<div class="url-header">
-    <div class="input-group">
-        <input type="text" id="urlInput" placeholder="Paste Pirate.lk movie link here...">
-        <button id="fetchBtn" onclick="fetchMovieDetails()">GET DETAILS</button>
+    <div class="max-w-4xl mx-auto">
+        <div class="flex gap-2 mb-8 bg-[#1e1e1e] p-2 rounded border border-gray-700">
+            <input id="movieUrl" type="text" placeholder="https://pirate.lk/movies/..." 
+                   class="flex-1 bg-transparent p-2 outline-none text-sm" value="https://pirate.lk/movies/nice-view-2022-sinhala-sub/">
+            <button onclick="fetchMovieDetails()" class="bg-red-600 px-4 py-2 rounded text-sm font-bold">Get Details</button>
+        </div>
+
+        <div id="loader" class="hidden text-center text-red-500 my-10">Fetching all details...</div>
+
+        <div id="movieGrid" class="movie-card p-6 hidden">
+            <div class="flex flex-col md:flex-row gap-8">
+                
+                <div class="w-full md:w-1/3">
+                    <img id="mainImg" src="" class="w-full rounded-lg shadow-2xl border border-gray-600" alt="Poster">
+                    <div class="mt-4 space-y-2 text-xs text-gray-400">
+                        <p>Director: <span id="dirName" class="text-gray-200"></span></p>
+                        <p>Runtime: <span id="runtime" class="text-gray-200"></span></p>
+                        <p>Country: <span id="country" class="text-gray-200"></span></p>
+                        <p>Created: <span id="dateCreated" class="text-gray-200"></span></p>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-2/3">
+                    <h1 id="movieTitle" class="text-3xl font-bold mb-2"></h1>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="bg-yellow-500 text-black px-2 py-1 rounded font-bold">IMDB</span>
+                        <span id="imdbRating" class="text-lg font-bold"></span>
+                        <span id="votes" class="text-gray-400 text-sm"></span>
+                    </div>
+
+                    <div id="genreContainer" class="flex flex-wrap gap-2 mb-4"></div>
+
+                    <p id="description" class="text-sm text-gray-400 leading-relaxed mb-6 italic"></p>
+
+                    <h3 class="text-sm font-bold border-b border-gray-700 pb-1 mb-3">Screenshots</h3>
+                    <div id="screenshotSlider" class="flex gap-2 overflow-x-auto scrollbar-hide mb-6"></div>
+
+                    <h3 class="text-sm font-bold border-b border-gray-700 pb-1 mb-3">Download Links</h3>
+                    <div id="downloadBox" class="space-y-2">
+                        </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="container" id="mainDisplay">
-    <div style="text-align:center; padding:100px; color:#555">Enter a Pirate.lk URL to load movie details.</div>
-</div>
+    <script>
+        const API_KEY = "vajiraofficial";
 
-<script>
-    const apikey = "vajiraofficial";
-    const proxy = "https://api.allorigins.win/get?url=";
+        async function fetchMovieDetails() {
+            const movieUrl = document.getElementById('movieUrl').value;
+            const loader = document.getElementById('loader');
+            const grid = document.getElementById('movieGrid');
 
-    async function fetchMovieDetails() {
-        const movieUrl = document.getElementById('urlInput').value.trim();
-        if (!movieUrl) return;
+            if(!movieUrl) return alert("Please enter a URL");
 
-        const container = document.getElementById('mainDisplay');
-        container.innerHTML = '<div style="text-align:center; padding:100px;">Loading Pirate.lk Details...</div>';
+            loader.classList.remove('hidden');
+            grid.classList.add('hidden');
 
-        const apiUrl = `https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${encodeURIComponent(movieUrl)}&apikey=${apikey}`;
+            try {
+                const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${movieUrl}&apikey=${API_KEY}`);
+                const json = await res.json();
+                const movie = json.data.data;
 
-        try {
-            const resp = await fetch(proxy + encodeURIComponent(apiUrl));
-            const jsonWrapper = await resp.json();
-            const result = JSON.parse(jsonWrapper.contents);
-            
-            // Mapping based on your provided screenshot
-            const movieData = result.data.data;
-            const main = movieData.mainDetails;
-            const detail = movieData.moviedata;
-            const links = movieData.dllinks.directDownloadLinks;
+                // Set Data
+                document.getElementById('movieTitle').innerText = movie.mainDetails.maintitle;
+                document.getElementById('mainImg').src = movie.mainDetails.imageUrl;
+                document.getElementById('dirName').innerText = movie.moviedata.director;
+                document.getElementById('runtime').innerText = movie.mainDetails.runtime;
+                document.getElementById('country').innerText = movie.mainDetails.country;
+                document.getElementById('dateCreated').innerText = movie.mainDetails.dateCreated;
+                document.getElementById('imdbRating').innerText = movie.moviedata.imdbRating;
+                document.getElementById('votes').innerText = movie.moviedata.imdbvotesCount;
+                document.getElementById('description').innerText = movie.moviedata.description;
 
-            container.innerHTML = `
-                <div class="movie-main">
-                    <img src="${main.imageUrl}" class="poster">
-                    <div class="info">
-                        <h1 style="font-size:2.5rem; margin:0;">${main.maintitle}</h1>
-                        <div class="badge-row">
-                            <span class="imdb-badge">IMDB ${detail.imdbRating}</span>
-                            <span class="meta-tag">${main.dateCreated}</span>
-                            <span class="meta-tag">•</span>
-                            <span class="meta-tag">${main.runtime}</span>
-                        </div>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            ${main.genres.map(g => `<span style="background:rgba(255,255,255,0.05); border:1px solid #333; padding:4px 14px; border-radius:30px; font-size:0.75rem; font-weight:700;">${g}</span>`).join('')}
-                        </div>
-                        <p class="description">${detail.description}</p>
-                        <div style="font-size:0.9rem; border-top:1px solid #222; padding-top:20px;">
-                            <b style="color:var(--primary)">Director:</b> ${detail.director}
-                        </div>
-                    </div>
-                </div>
+                // Genres
+                const genreBox = document.getElementById('genreContainer');
+                genreBox.innerHTML = '';
+                movie.mainDetails.genres.forEach(g => {
+                    genreBox.innerHTML += `<span class="bg-gray-800 px-3 py-1 rounded-full text-xs">${g}</span>`;
+                });
 
-                <div class="screenshot-section">
-                    <span class="section-label">Screenshots</span>
-                    <div class="gallery-wrapper">
-                        ${detail.imageUrls.map(url => `<img src="${url.trim()}" onclick="window.open(this.src)">`).join('')}
-                    </div>
-                </div>
+                // Screenshots
+                const screenBox = document.getElementById('screenshotSlider');
+                screenBox.innerHTML = '';
+                movie.moviedata.imageUrls.forEach(url => {
+                    screenBox.innerHTML += `<img src="${url}" class="h-20 rounded border border-gray-700">`;
+                });
 
-                <div class="cast-section">
-                    <span class="section-label">Cast</span>
-                    <div class="cast-grid">
-                        ${detail.cast.map(c => `
-                            <div class="cast-card">
-                                <strong>${c.name}</strong><br>
-                                <small style="color:#888">${c.character}</small>
+                // Downloads
+                const dlBox = document.getElementById('downloadBox');
+                dlBox.innerHTML = '';
+                movie.dllinks.directDownloadLinks.forEach((link, index) => {
+                    dlBox.innerHTML += `
+                        <div class="flex justify-between items-center bg-black/30 p-3 rounded border border-gray-800">
+                            <div>
+                                <p class="text-sm font-bold text-red-500">${link.quality}</p>
+                                <p class="text-xs text-gray-500">${link.size} | ${link.platform}</p>
                             </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <div class="download-card">
-                    <span class="section-label" style="margin-bottom:20px;">Direct Download Links</span>
-                    ${links.map(l => `
-                        <div class="dl-row">
-                            <div class="dl-info">
-                                <b>${l.quality}</b><br>
-                                <span style="color:#666; font-size:0.9rem;">${l.size} • ${l.platform}</span>
-                            </div>
-                            <button onclick="handleDownload('${l.link}', this)" class="dl-action-btn">DOWNLOAD</button>
+                            <button onclick="resolveDownload('${link.link}')" class="btn-download px-4 py-1 rounded text-sm font-bold">Download</button>
                         </div>
-                    `).join('')}
-                </div>
-            `;
-        } catch (e) {
-            console.error(e);
-            container.innerHTML = '<div style="text-align:center; color:var(--primary); padding:100px;">Error: Check URL or API Key.</div>';
-        }
-    }
+                    `;
+                });
 
-    async function handleDownload(linkUrl, btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "WAIT...";
-        btn.disabled = true;
-
-        const downloadApi = `https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(linkUrl)}&apikey=${apikey}`;
-
-        try {
-            const resp = await fetch(proxy + encodeURIComponent(downloadApi));
-            const jsonWrapper = await resp.json();
-            const result = JSON.parse(jsonWrapper.contents);
-            
-            // Correct path for Pirate.lk download API
-            let finalLink = result.data.data.link;
-
-            if (finalLink) {
-                window.open(finalLink, '_blank');
-            } else {
-                alert("Download link not found.");
+                grid.classList.remove('hidden');
+            } catch (err) {
+                alert("Error fetching data");
+            } finally {
+                loader.classList.add('hidden');
             }
-        } catch (e) {
-            alert("Error generating download.");
-        } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
         }
-    }
-</script>
+
+        async function resolveDownload(shortUrl) {
+            try {
+                const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${shortUrl}&apikey=${API_KEY}`);
+                const json = await res.json();
+                if(json.data.data.link) {
+                    window.open(json.data.data.link, '_blank');
+                }
+            } catch (err) {
+                alert("Error resolving download link");
+            }
+        }
+    </script>
 </body>
 </html>
