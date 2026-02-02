@@ -9,7 +9,6 @@
         :root { --primary: #ff1e2a; --bg: #080808; --card: #151515; --text: #ffffff; --accent: #38bdf8; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
 
-        /* Modern Input Header */
         .url-header {
             padding: 25px 20px;
             background: rgba(13, 13, 13, 0.95);
@@ -35,7 +34,6 @@
 
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
 
-        /* Main Info Section */
         .movie-main { display: grid; grid-template-columns: 320px 1fr; gap: 40px; margin-bottom: 50px; }
         .poster { width: 100%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid #333; }
         
@@ -45,7 +43,6 @@
         
         .description { color: #bbb; font-size: 1.1rem; line-height: 1.7; margin: 25px 0; }
 
-        /* BEAUTIFUL SCREENSHOT GALLERY */
         .screenshot-section { margin: 40px 0; }
         .section-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); font-weight: 800; margin-bottom: 15px; display: block; }
         
@@ -53,16 +50,11 @@
             display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;
             scrollbar-width: thin; scrollbar-color: var(--primary) #222;
         }
-        .gallery-wrapper::-webkit-scrollbar { height: 6px; }
-        .gallery-wrapper::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        
         .gallery-wrapper img {
             height: 180px; border-radius: 12px; object-fit: cover;
             border: 1px solid #333; transition: 0.3s; cursor: pointer;
         }
-        .gallery-wrapper img:hover { transform: scale(1.05); border-color: var(--primary); }
 
-        /* DOWNLOAD BOX */
         .download-card {
             background: var(--card); border-radius: 20px; padding: 30px;
             border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -76,16 +68,15 @@
         .dl-info span { color: #666; font-size: 0.9rem; margin-left: 10px; }
         
         .dl-action-btn {
-            background: #222; color: #fff; text-decoration: none;
+            background: #222; color: #fff; border: 1px solid #333;
             padding: 10px 24px; border-radius: 8px; font-weight: 700;
-            font-size: 0.85rem; transition: 0.3s; border: 1px solid #333;
+            font-size: 0.85rem; transition: 0.3s; cursor: pointer;
         }
         .dl-action-btn:hover { background: var(--primary); border-color: var(--primary); }
 
         @media (max-width: 850px) {
             .movie-main { grid-template-columns: 1fr; }
             .poster { max-width: 280px; margin: 0 auto; display: block; }
-            .gallery-wrapper img { height: 140px; }
         }
     </style>
 </head>
@@ -160,7 +151,7 @@
                                 <b>${l.quality}</b>
                                 <span>${l.size} • ${l.type}</span>
                             </div>
-                            <a href="${l.link}" target="_blank" class="dl-action-btn">DOWNLOAD</a>
+                            <button onclick="handleDownload('${l.link}', this)" class="dl-action-btn">DOWNLOAD</button>
                         </div>
                     `).join('')}
                 </div>
@@ -171,13 +162,38 @@
             `;
 
         } catch (e) {
-            container.innerHTML = '<div style="text-align:center; color:var(--primary); padding:100px;">Error: Could not fetch data. Check URL or API Key.</div>';
+            container.innerHTML = '<div style="text-align:center; color:var(--primary); padding:100px;">Error: Could not fetch data.</div>';
         }
     }
 
-    // Auto-fetch the initial URL
+    // Fixed Download Function
+    async function handleDownload(linkUrl, btn) {
+        const originalText = btn.innerText;
+        btn.innerText = "WAIT...";
+        btn.disabled = true;
+
+        const downloadApi = `https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/download?url=${encodeURIComponent(linkUrl)}&apikey=${apikey}`;
+
+        try {
+            const resp = await fetch(proxy + encodeURIComponent(downloadApi));
+            const jsonWrapper = await resp.json();
+            const result = JSON.parse(jsonWrapper.contents);
+            const finalVideoLink = result.data.data.link;
+
+            if (finalVideoLink) {
+                window.location.href = finalVideoLink;
+            } else {
+                alert("Download link not found.");
+            }
+        } catch (e) {
+            alert("Error generating download.");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+
     fetchMovieDetails();
 </script>
-
 </body>
 </html>
