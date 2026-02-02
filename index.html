@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamFetch Pro | One-Click Downloader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>StreamFetch | Pro Multi-Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent: #ff2d55;
-            --accent-glow: rgba(255, 45, 85, 0.4);
             --bg: #0d0e12;
-            --glass: rgba(255, 255, 255, 0.03);
+            --card: rgba(255, 255, 255, 0.04);
             --border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg);
@@ -27,135 +25,143 @@
             padding: 20px;
         }
 
-        .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 10% 20%, rgba(255, 45, 85, 0.1) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(255, 45, 85, 0.05) 0%, transparent 40%);
-            z-index: -1;
-        }
-
-        .app-card {
+        .app-container {
             width: 100%;
-            max-width: 500px;
-            background: var(--glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            max-width: 480px;
+            background: var(--card);
+            backdrop-filter: blur(25px);
             border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 35px 25px;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.6);
-            text-align: center;
+            border-radius: 35px;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        h1 { font-size: 2rem; margin-bottom: 30px; letter-spacing: -1px; }
-        h1 span { color: var(--accent); }
-
-        /* Input area with button BELOW */
-        .search-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .input-wrapper {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 15px 20px;
-            transition: 0.3s;
-        }
-
-        .input-wrapper:focus-within { border-color: var(--accent); }
-
+        .input-section { margin-bottom: 25px; }
         input {
-            width: 100%; background: transparent; border: none;
-            color: white; outline: none; font-size: 1rem; text-align: center;
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
         }
+        input:focus { border-color: var(--accent); }
 
         #fetchBtn {
+            width: 100%;
             background: var(--accent);
-            color: white; border: none;
-            padding: 16px; border-radius: 20px;
-            font-weight: 800; font-size: 0.9rem;
-            text-transform: uppercase; letter-spacing: 2px;
-            cursor: pointer; transition: 0.4s;
-            box-shadow: 0 10px 25px var(--accent-glow);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 45, 85, 0.3);
         }
 
-        #fetchBtn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px var(--accent);
+        #resultArea { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .thumb { width: 100%; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+        
+        .stats { 
+            display: flex; 
+            gap: 10px; 
+            font-size: 0.75rem; 
+            color: #888; 
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
+        .stats span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; }
 
-        /* Results */
-        #resultArea { display: none; animation: slideUp 0.6s ease; text-align: left; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .thumbnail { width: 100%; border-radius: 25px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .vid-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; line-height: 1.4; }
-
-        .section-title {
-            font-size: 0.7rem; color: var(--accent);
-            font-weight: 800; letter-spacing: 2px;
-            margin: 25px 0 12px 0; border-bottom: 1px solid var(--border);
-            padding-bottom: 5px;
+        /* Format Selection Buttons */
+        .format-selection {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
-        .dl-card {
-            background: rgba(255,255,255,0.05);
+        .sel-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            padding: 15px 10px; border-radius: 18px;
-            text-decoration: none; color: white;
-            text-align: center; transition: 0.3s;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
         }
+        .sel-btn.active { background: var(--accent); border-color: var(--accent); }
 
-        .dl-card:hover {
-            background: var(--accent);
-            transform: scale(1.03);
-            box-shadow: 0 8px 15px var(--accent-glow);
+        /* Download Lists */
+        .dl-list { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .dl-list.active { display: grid; }
+
+        .dl-item {
+            background: rgba(255,255,255,0.07);
+            padding: 15px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1px solid transparent;
         }
+        .dl-item:hover { border-color: var(--accent); background: rgba(255, 45, 85, 0.1); }
+        .dl-item span { display: block; font-size: 0.65rem; opacity: 0.6; margin-top: 4px; }
 
-        .dl-card strong { display: block; font-size: 0.9rem; }
-        .dl-card span { font-size: 0.6rem; opacity: 0.7; font-weight: 600; }
-
-        /* Simple Loader */
-        #loader { display: none; margin: 20px 0; font-weight: 700; color: var(--accent); }
+        #loader { display: none; color: var(--accent); font-weight: 700; margin: 15px 0; }
     </style>
 </head>
 <body>
 
-    <div class="mesh-bg"></div>
-
-    <div class="app-card">
-        <h1>Stream<span>Fetch</span></h1>
-
-        <div class="search-section">
-            <div class="input-wrapper">
-                <input type="text" id="urlInput" placeholder="Paste YouTube Link Here..." spellcheck="false">
-            </div>
-            <button id="fetchBtn">Search & Load All</button>
+    <div class="app-container">
+        <h2 style="text-align: center; margin-bottom: 20px;">Stream<span style="color:var(--accent)">Fetch</span></h2>
+        
+        <div class="input-section">
+            <input type="text" id="urlInput" placeholder="Paste YouTube Link...">
+            <button id="fetchBtn">Get Details</button>
         </div>
 
-        <div id="loader">Fetching Details...</div>
+        <div id="loader" style="text-align: center;">Processing Data...</div>
 
         <div id="resultArea">
-            <img id="vidThumb" class="thumbnail" src="">
-            <h2 id="vidTitle" class="vid-title"></h2>
+            <img id="vidThumb" class="thumb" src="">
+            <div id="vidTitle" class="title"></div>
             
-            <div class="section-title">VIDEO OPTIONS (MP4)</div>
-            <div class="grid" id="videoGrid"></div>
+            <div class="stats">
+                <span id="vidAuthor"></span>
+                <span id="vidViews"></span>
+                <span id="vidAgo"></span>
+                <span id="vidTime"></span>
+            </div>
 
-            <div class="section-title">AUDIO OPTIONS (MP3)</div>
-            <div class="grid" id="audioGrid"></div>
+            <div class="format-selection">
+                <button class="sel-btn active" id="btnVid" onclick="toggleDisplay('video')">VIDEO (MP4)</button>
+                <button class="sel-btn" id="btnAud" onclick="toggleDisplay('audio')">AUDIO (MP3)</button>
+            </div>
+
+            <div id="videoList" class="dl-list active"></div>
+            <div id="audioList" class="dl-list"></div>
         </div>
     </div>
 
     <script>
         const API_KEY = "vajira-1qg3lqmr60-1768268975394";
+
+        function toggleDisplay(type) {
+            document.getElementById('videoList').classList.toggle('active', type === 'video');
+            document.getElementById('audioList').classList.toggle('active', type === 'audio');
+            document.getElementById('btnVid').classList.toggle('active', type === 'video');
+            document.getElementById('btnAud').classList.toggle('active', type === 'audio');
+        }
 
         document.getElementById('fetchBtn').addEventListener('click', async () => {
             const url = document.getElementById('urlInput').value.trim();
@@ -163,60 +169,53 @@
 
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('resultArea');
-            const videoGrid = document.getElementById('videoGrid');
-            const audioGrid = document.getElementById('audioGrid');
-
-            // Reset UI
             loader.style.display = "block";
             resultArea.style.display = "none";
-            videoGrid.innerHTML = "";
-            audioGrid.innerHTML = "";
 
             try {
-                // Fetch both Video and Audio at the same time
-                const [videoRes, audioRes] = await Promise.all([
+                // Fetch Video and Audio data together to avoid "Connection Failed" later
+                const [vRes, aRes] = await Promise.all([
                     fetch(`https://vajira-official-apis.vercel.app/api/ytmp4?apikey=${API_KEY}&url=${url}`).then(r => r.json()),
                     fetch(`https://vajira-official-apis.vercel.app/api/ytmp3?apikey=${API_KEY}&url=${url}`).then(r => r.json())
                 ]);
 
-                if (videoRes.status && audioRes.status) {
-                    const meta = videoRes.metadata;
+                if (vRes.status && aRes.status) {
+                    const meta = vRes.metadata;
                     
-                    // Header Info
+                    // Display Main Info
                     document.getElementById('vidThumb').src = meta.thumbnails.max || meta.thumbnails.image;
                     document.getElementById('vidTitle').innerText = meta.title;
+                    document.getElementById('vidAuthor').innerText = meta.author.name;
+                    document.getElementById('vidViews').innerText = meta.viewsFormatted + " views";
+                    document.getElementById('vidAgo').innerText = meta.ago;
+                    document.getElementById('vidTime').innerText = meta.duration.timestamp;
 
-                    // Generate Video Buttons
-                    videoRes.downloads.video.forEach(item => {
-                        videoGrid.appendChild(createBtn(item.quality, 'MP4', item.url));
+                    // Clear and Build Video Buttons
+                    const vList = document.getElementById('videoList');
+                    vList.innerHTML = "";
+                    vRes.downloads.video.forEach(dl => {
+                        vList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.quality}<span>MP4 VIDEO</span></a>`;
                     });
 
-                    // Generate Audio Buttons
-                    audioRes.data.downloads.forEach(item => {
-                        audioGrid.appendChild(createBtn(item.bitrate, 'MP3', item.url));
+                    // Clear and Build Audio Buttons
+                    const aList = document.getElementById('audioList');
+                    aList.innerHTML = "";
+                    aRes.data.downloads.forEach(dl => {
+                        aList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.bitrate}<span>MP3 AUDIO</span></a>`;
                     });
 
                     loader.style.display = "none";
                     resultArea.style.display = "block";
                 } else {
-                    alert("Link not found or API error.");
+                    alert("API Error: Check link or API Key.");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Connection failed. Try a different link.");
+                alert("Connection Failed. Make sure the API is online.");
             } finally {
                 loader.style.display = "none";
             }
         });
-
-        function createBtn(label, type, url) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.className = 'dl-card';
-            a.target = '_blank';
-            a.innerHTML = `<strong>${label}</strong><span>${type} DOWNLOAD</span>`;
-            return a;
-        }
     </script>
 </body>
 </html>
