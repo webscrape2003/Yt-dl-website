@@ -3,43 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vajira Movie Box Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Vajira Movie Box - Instant Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff1e2a; --bg: #080808; --card: #121212; --text: #ffffff; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; scroll-behavior: smooth; }
-
-        .header { padding: 20px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-        .search-box { max-width: 800px; margin: 0 auto; display: flex; gap: 10px; background: #1a1a1a; padding: 5px; border-radius: 12px; border: 1px solid #333; }
-        input { flex: 1; background: transparent; border: none; color: white; padding: 12px; outline: none; font-size: 1rem; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; }
-
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
-        .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 25px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        :root { --primary: #ff1e2a; --bg: #0a0a0a; --card: #121212; --text: #ffffff; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
         
+        /* Header & UI */
+        .header { padding: 20px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .search-box { max-width: 600px; margin: 0 auto; display: flex; gap: 10px; background: #1a1a1a; padding: 5px; border-radius: 12px; border: 1px solid #333; }
+        input { flex: 1; background: transparent; border: none; color: white; padding: 12px; outline: none; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
+        .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 25px; color: #fff; border-left: 5px solid var(--primary); padding-left: 15px; }
+
+        /* Movie Grid */
         .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .movie-card { background: var(--card); border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; position: relative; }
+        .movie-card { background: var(--card); border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; position: relative; height: 100%; display: flex; flex-direction: column; }
         .movie-card:hover { transform: translateY(-8px); border-color: var(--primary); }
-        .image-container { position: relative; width: 100%; padding-top: 145%; }
+        .image-container { position: relative; width: 100%; padding-top: 145%; background: #1a1a1a; }
         .movie-card img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 15px; background: linear-gradient(to top, #000 85%, transparent); margin-top: -70px; position: relative; }
-        .card-title { font-size: 0.85rem; font-weight: 600; text-align: center; }
+        .card-info { padding: 15px; background: linear-gradient(to top, #000 85%, transparent); margin-top: -70px; position: relative; flex-grow: 1; display: flex; align-items: flex-end; }
+        .card-title { font-size: 0.85rem; font-weight: 600; line-height: 1.3; color: #fff; text-align: center; width: 100%; }
 
+        /* Detail View Styles */
         #detailView { display: none; }
-        .movie-main { display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
-        .poster-detail { width: 100%; border-radius: 15px; border: 1px solid #333; }
-        .description { color: #aaa; line-height: 1.6; margin: 20px 0; max-height: 250px; overflow-y: auto; }
-        .gallery-wrapper { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin: 30px 0; }
-        .gallery-wrapper img { height: 140px; border-radius: 10px; cursor: pointer; border: 1px solid #333; }
+        .detail-layout { display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
+        .poster-big { width: 100%; border-radius: 15px; border: 1px solid #333; }
+        .desc { color: #aaa; line-height: 1.6; margin: 20px 0; }
+        .dl-list { margin-top: 30px; background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; }
+        .dl-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
+        .dl-item:last-child { border: none; }
+        .btn-dl { background: var(--primary); padding: 8px 15px; font-size: 0.8rem; }
 
-        .download-card { background: #111; border-radius: 20px; padding: 25px; border: 1px solid #222; }
-        .dl-row { display: flex; justify-content: space-between; align-items: center; padding: 18px; margin-bottom: 12px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
-        .dl-btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; }
-
-        @media (max-width: 800px) {
-            .movie-main { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            .detail-layout { grid-template-columns: 1fr; }
+            .poster-big { max-width: 250px; margin: 0 auto; display: block; }
             .movie-grid { grid-template-columns: repeat(2, 1fr); }
-            .poster-detail { max-width: 250px; margin: 0 auto; display: block; }
         }
     </style>
 </head>
@@ -47,116 +48,120 @@
 
 <div class="header">
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search Movie...">
-        <button class="btn-main" onclick="searchMovies()">SEARCH</button>
+        <input type="text" id="searchInput" placeholder="Search Movie Title...">
+        <button onclick="searchMovies()">SEARCH</button>
     </div>
 </div>
 
 <div class="container">
     <div id="searchView">
-        <div class="section-title">Latest Releases</div>
+        <div class="section-title" id="statusText">Latest Movies</div>
         <div class="movie-grid" id="movieGrid"></div>
     </div>
 
     <div id="detailView">
-        <button onclick="backToSearch()" style="background:transparent; border:1px solid #444; color:#fff; padding:8px 15px; border-radius:6px; cursor:pointer; margin-bottom:20px;">← BACK</button>
+        <button onclick="goBack()" style="background:#222; margin-bottom:20px;">← BACK TO SEARCH</button>
         <div id="detailContent"></div>
     </div>
 </div>
 
 <script>
-    const apikey = "vajiraofficial";
+    const API_KEY = "vajiraofficial";
 
+    // SEARCH FUNCTION
     async function searchMovies() {
         const query = document.getElementById('searchInput').value.trim();
         if (!query) return;
 
-        const url = `https://vajira-mv-apikeys.netlify.app/api/pirate/search?q=${encodeURIComponent(query)}&apikey=${apikey}`;
-        try {
-            const resp = await fetch(url);
-            const result = await resp.json();
-            const movies = result?.data?.data?.data || result?.data?.data || [];
+        showPage('search');
+        document.getElementById('statusText').innerText = "Fetching results...";
 
-            document.getElementById('movieGrid').innerHTML = movies.map(m => `
-                <div class="movie-card" onclick="loadMovieDetails('${m.link}')">
-                    <div class="image-container"><img src="${m.imageSrc || m.image}"></div>
-                    <div class="card-info"><div class="card-title">${m.title}</div></div>
-                </div>
-            `).join('');
-            showView('search');
-        } catch (e) { console.error("Search error"); }
+        try {
+            const resp = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/search?q=${encodeURIComponent(query)}&apikey=${API_KEY}`);
+            const json = await resp.json();
+            const movies = json.data?.data?.data || json.data?.data || [];
+
+            let html = '';
+            movies.forEach(m => {
+                html += `
+                    <div class="movie-card" onclick="loadDetails('${m.link}')">
+                        <div class="image-container"><img src="${m.imageSrc || m.image}"></div>
+                        <div class="card-info"><div class="card-title">${m.title}</div></div>
+                    </div>`;
+            });
+            document.getElementById('movieGrid').innerHTML = html || "No results found.";
+            document.getElementById('statusText').innerText = `Results for "${query}"`;
+        } catch (e) {
+            document.getElementById('statusText').innerText = "Connection Error";
+        }
     }
 
-    async function loadMovieDetails(movieUrl) {
-        const url = `https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${encodeURIComponent(movieUrl)}&apikey=${apikey}`;
+    // LOAD MOVIE DETAILS
+    async function loadDetails(movieUrl) {
+        showPage('detail');
+        const content = document.getElementById('detailContent');
+        content.innerHTML = "<h2>Loading details...</h2>";
+
         try {
-            const resp = await fetch(url);
+            const resp = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${encodeURIComponent(movieUrl)}&apikey=${API_KEY}`);
             const result = await resp.json();
             const movie = result.data.data.mainDetails;
             const extra = result.data.data.moviedata;
             const links = result.data.data.dllinks.directDownloadLinks;
 
-            document.getElementById('detailContent').innerHTML = `
-                <div class="movie-main">
-                    <img src="${movie.imageUrl}" class="poster-detail">
-                    <div class="info">
+            content.innerHTML = `
+                <div class="detail-layout">
+                    <img src="${movie.imageUrl}" class="poster-big">
+                    <div>
                         <h1 style="margin:0; font-size:2.5rem;">${movie.maintitle}</h1>
-                        <div style="margin:10px 0; color:var(--primary); font-weight:800;">IMDb ${extra.imdbRating} • ${movie.dateCreated}</div>
-                        <p class="description">${extra.description}</p>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #222; padding-top:15px;">
-                            <div><b>Director:</b><br>${extra.director}</div>
-                            <div><b>Country:</b><br>${movie.country}</div>
+                        <p style="color:var(--primary); font-weight:800;">${movie.dateCreated} • ${movie.runtime}</p>
+                        <p class="desc">${extra.description}</p>
+                        
+                        <div class="dl-list">
+                            <h3 style="margin-top:0">Direct Download Links</h3>
+                            ${links.map(l => `
+                                <div class="dl-item">
+                                    <div><b>${l.quality}</b><br><small style="color:#666">${l.size}</small></div>
+                                    <button class="btn-dl" onclick="handleDownload('${l.link}')">GET FILE</button>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 </div>
-                <div class="gallery-wrapper">${extra.imageUrls.map(u => `<img src="${u}">`).join('')}</div>
-                
-                <div class="section-title">Movie Cast</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin-bottom:40px;">
-                    ${extra.cast.slice(0, 6).map(c => `
-                        <div style="background:#1a1a1a; padding:10px; border-radius:8px; border:1px solid #333;">
-                            <div style="font-weight:800; font-size:0.8rem;">${c.name}</div>
-                            <div style="font-size:0.7rem; color:#666;">${c.character}</div>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <div class="download-card">
-                    <div style="margin-bottom:15px; font-weight:800; color:var(--primary);">DOWNLOAD OPTIONS</div>
-                    ${links.map(l => `
-                        <div class="dl-row">
-                            <div><b>${l.quality}</b><br><small style="color:#666">${l.size}</small></div>
-                            <button class="dl-btn" onclick="handleDownload('${l.link}')">GET FILE</button>
-                        </div>
-                    `).join('')}
-                </div>
             `;
-            showView('detail');
-        } catch (e) { console.error("Detail load error"); }
+        } catch (e) {
+            content.innerHTML = "<h2>Error loading details.</h2>";
+        }
     }
 
+    // DOWNLOAD & URL REPLACEMENT LOGIC
     async function handleDownload(linkUrl) {
-        const url = `https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(linkUrl)}&apikey=${apikey}`;
         try {
-            const resp = await fetch(url);
+            const resp = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(linkUrl)}&apikey=${API_KEY}`);
             const result = await resp.json();
             let finalLink = result.data.data.link;
+
             if (finalLink) {
-                // SUDDEN REDIRECT: swap api/file/ for u/
-                const userViewLink = finalLink.replace('api/file/', 'u/').split('?')[0];
-                window.location.replace(userViewLink);
+                // INSTANT SWAP: Replace api/file/ with u/ and remove ?download
+                const cleanLink = finalLink.replace('api/file/', 'u/').split('?')[0];
+                window.location.href = cleanLink;
             }
-        } catch (e) { console.error("Download fail"); }
+        } catch (e) {
+            alert("Download failed.");
+        }
     }
 
-    function showView(view) {
-        document.getElementById('searchView').style.display = view === 'search' ? 'block' : 'none';
-        document.getElementById('detailView').style.display = view === 'detail' ? 'block' : 'none';
+    // UI NAVIGATION
+    function showPage(page) {
+        document.getElementById('searchView').style.display = (page === 'search' ? 'block' : 'none');
+        document.getElementById('detailView').style.display = (page === 'detail' ? 'block' : 'none');
         window.scrollTo(0,0);
     }
 
-    function backToSearch() { showView('search'); }
-    document.getElementById('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') searchMovies(); });
+    function goBack() { showPage('search'); }
+
+    // Initial load
+    document.getElementById('searchInput').addEventListener('keypress', e => { if(e.key === 'Enter') searchMovies(); });
 </script>
 </body>
 </html>
