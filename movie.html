@@ -165,28 +165,39 @@
     }
 
     async function handleDownload(linkUrl, btn) {
-    // No text change, no waiting - executes immediately
+    const originalText = btn.innerText;
+    btn.innerText = "WAIT...";
+    btn.disabled = true;
+
+    // Construct the direct download link resolver API
     const downloadApi = `https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(linkUrl)}&apikey=${apikey}`;
 
     try {
         const resp = await fetch(proxy + encodeURIComponent(downloadApi));
         const jsonWrapper = await resp.json();
         const result = JSON.parse(jsonWrapper.contents);
+        
         let finalVideoLink = result.data.data.link;
 
         if (finalVideoLink) {
-            // Clean URL for direct navigation
+            // Clean up the link if it's a Pixeldrain API link to make it a web view link
             finalVideoLink = finalVideoLink
-            
-            // SUDDEN REDIRECT: Replaces current page with the destination instantly
-            window.location.replace(finalVideoLink);
+                .replace('api/file/', 'u/')
+                .replace(/[?&]download/, '');
+
+            // REDIRECT IN THE SAME TAB
+            window.location.href = finalVideoLink; 
+        } else {
+            alert("Download link not found.");
+            btn.innerText = originalText;
+            btn.disabled = false;
         }
     } catch (e) {
-        // Fallback only if the API fails
-        console.error("Redirect failed");
+        alert("Error generating download link.");
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
 }
-
 
 
 
