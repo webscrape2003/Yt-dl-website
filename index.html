@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamFetch | Pro Multi-Downloader</title>
+    <title>StreamFetch | VajiraOfficial Ytdl</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,14 +11,17 @@
             --bg: #0d0e12;
             --card: rgba(255, 255, 255, 0.04);
             --border: rgba(255, 255, 255, 0.1);
+            --text-dim: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg);
             color: white;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -34,9 +37,11 @@
             border-radius: 35px;
             padding: 30px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
         }
 
-        .input-section { margin-bottom: 25px; }
+        .input-section { margin-bottom: 25px; text-align: center; }
+        
         input {
             width: 100%;
             background: rgba(0,0,0,0.3);
@@ -47,6 +52,7 @@
             text-align: center;
             margin-bottom: 15px;
             outline: none;
+            font-size: 0.95rem;
         }
         input:focus { border-color: var(--accent); }
 
@@ -62,75 +68,69 @@
             letter-spacing: 1px;
             cursor: pointer;
             box-shadow: 0 10px 20px rgba(255, 45, 85, 0.3);
+            transition: 0.3s;
         }
+
+        #fetchBtn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
         #resultArea { display: none; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .thumb { width: 100%; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+        .title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
         
         .stats { 
-            display: flex; 
-            gap: 10px; 
-            font-size: 0.75rem; 
-            color: #888; 
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            display: flex; gap: 8px; font-size: 0.7rem; color: var(--text-dim); 
+            margin-bottom: 25px; flex-wrap: wrap; 
         }
-        .stats span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; }
+        .stats span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; font-weight: 600; }
 
-        /* Format Selection Buttons */
-        .format-selection {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        .format-selection { display: flex; gap: 10px; margin-bottom: 20px; }
+        
         .sel-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: rgba(255,255,255,0.05);
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
+            flex: 1; padding: 14px; border-radius: 14px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05); color: white; font-weight: 700;
+            cursor: pointer; transition: 0.3s; font-size: 0.8rem;
         }
-        .sel-btn.active { background: var(--accent); border-color: var(--accent); }
+        .sel-btn.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 5px 15px var(--accent-glow); }
 
-        /* Download Lists */
         .dl-list { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
         .dl-list.active { display: grid; }
 
         .dl-item {
-            background: rgba(255,255,255,0.07);
-            padding: 15px;
-            border-radius: 15px;
-            text-decoration: none;
-            color: white;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border: 1px solid transparent;
+            background: rgba(255,255,255,0.07); padding: 15px; border-radius: 18px;
+            text-decoration: none; color: white; text-align: center; font-size: 0.85rem;
+            font-weight: 700; border: 1px solid transparent; transition: 0.2s;
         }
-        .dl-item:hover { border-color: var(--accent); background: rgba(255, 45, 85, 0.1); }
-        .dl-item span { display: block; font-size: 0.65rem; opacity: 0.6; margin-top: 4px; }
+        .dl-item:hover { border-color: var(--accent); background: rgba(255, 45, 85, 0.15); transform: scale(1.02); }
+        .dl-item span { display: block; font-size: 0.65rem; opacity: 0.6; margin-top: 4px; text-transform: uppercase; }
 
-        #loader { display: none; color: var(--accent); font-weight: 700; margin: 15px 0; }
+        #loader { display: none; color: var(--accent); font-weight: 700; margin: 15px 0; text-align: center; }
+
+        /* Footer Styling */
+        footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        footer span { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <h2 style="text-align: center; margin-bottom: 20px;">Stream<span style="color:var(--accent)">Fetch</span></h2>
+        <h2 style="text-align: center; margin-bottom: 25px; font-weight: 800;">Stream<span style="color:var(--accent)">Fetch</span></h2>
         
         <div class="input-section">
-            <input type="text" id="urlInput" placeholder="Paste YouTube Link...">
-            <button id="fetchBtn">Get Details</button>
+            <input type="text" id="urlInput" placeholder="Paste YouTube Video Link...">
+            <button id="fetchBtn">Fetch Download Links</button>
         </div>
 
-        <div id="loader" style="text-align: center;">Processing Data...</div>
+        <div id="loader">Gathering Data...</div>
 
         <div id="resultArea">
             <img id="vidThumb" class="thumb" src="">
@@ -153,10 +153,10 @@
         </div>
     </div>
 
-<footer>
-        Powered by: VajiraOfficial <span>Ytdl</span>
+    <footer>
+        VajiraOfficial <span>Ytdl</span>
     </footer>
-    
+
     <script>
         const API_KEY = "vajira-1qg3lqmr60-1768268975394";
 
@@ -169,7 +169,7 @@
 
         document.getElementById('fetchBtn').addEventListener('click', async () => {
             const url = document.getElementById('urlInput').value.trim();
-            if(!url) return alert("Please enter a link!");
+            if(!url) return alert("Please paste a link first!");
 
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('resultArea');
@@ -177,7 +177,7 @@
             resultArea.style.display = "none";
 
             try {
-                // Fetch Video and Audio data together to avoid "Connection Failed" later
+                // Fetch both endpoints
                 const [vRes, aRes] = await Promise.all([
                     fetch(`https://vajira-official-apis.vercel.app/api/ytmp4?apikey=${API_KEY}&url=${url}`).then(r => r.json()),
                     fetch(`https://vajira-official-apis.vercel.app/api/ytmp3?apikey=${API_KEY}&url=${url}`).then(r => r.json())
@@ -186,36 +186,36 @@
                 if (vRes.status && aRes.status) {
                     const meta = vRes.metadata;
                     
-                    // Display Main Info
-                    document.getElementById('vidThumb').src = meta.thumbnails.max || meta.thumbnails.image;
+                    // Display Header Meta
+                    document.getElementById('vidThumb').src = meta.thumbnails.max || meta.thumbnails.image || meta.thumbnails.high;
                     document.getElementById('vidTitle').innerText = meta.title;
                     document.getElementById('vidAuthor').innerText = meta.author.name;
                     document.getElementById('vidViews').innerText = meta.viewsFormatted + " views";
                     document.getElementById('vidAgo').innerText = meta.ago;
                     document.getElementById('vidTime').innerText = meta.duration.timestamp;
 
-                    // Clear and Build Video Buttons
+                    // Build Video Buttons
                     const vList = document.getElementById('videoList');
                     vList.innerHTML = "";
                     vRes.downloads.video.forEach(dl => {
-                        vList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.quality}<span>MP4 VIDEO</span></a>`;
+                        vList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.quality}<span>${dl.format}</span></a>`;
                     });
 
-                    // Clear and Build Audio Buttons
+                    // Build Audio Buttons
                     const aList = document.getElementById('audioList');
                     aList.innerHTML = "";
                     aRes.data.downloads.forEach(dl => {
-                        aList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.bitrate}<span>MP3 AUDIO</span></a>`;
+                        aList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.bitrate}<span>${dl.format}</span></a>`;
                     });
 
                     loader.style.display = "none";
                     resultArea.style.display = "block";
                 } else {
-                    alert("API Error: Check link or API Key.");
+                    alert("Error: Link invalid or API failed.");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Connection Failed. Make sure the API is online.");
+                alert("Connection Failed. Make sure your internet and API are active.");
             } finally {
                 loader.style.display = "none";
             }
