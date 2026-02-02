@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VajiraOfficial | Social Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,6 +12,10 @@
             --bg: #0d0e12;
             --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
+            --yt: #FF0000;
+            --fb: #1877F2;
+            --tt: #00f2ea;
+            --mv: #ff9f43;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,7 +27,7 @@
             overflow-x: hidden;
         }
 
-        /* --- SPLASH SCREEN ANIMATION --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -36,9 +41,9 @@
         }
 
         .logo-text {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            letter-spacing: -1px;
+            letter-spacing: -2px;
             background: linear-gradient(90deg, #fff, var(--accent), #fff);
             background-size: 200%;
             -webkit-background-clip: text;
@@ -47,10 +52,10 @@
         }
 
         .loading-bar {
-            width: 150px;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            margin-top: 20px;
+            width: 200px;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            margin-top: 25px;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -59,91 +64,90 @@
             width: 0%;
             height: 100%;
             background: var(--accent);
-            animation: progress 3s forwards;
+            animation: progress 3s forwards cubic-bezier(0.445, 0.05, 0.55, 0.95);
         }
 
-        @keyframes shimmer {
-            0% { background-position: -200%; }
-            100% { background-position: 200%; }
-        }
-
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
+        @keyframes shimmer { 0% { background-position: -200%; } 100% { background-position: 200%; } }
+        @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
 
         /* --- MAIN CONTENT --- */
         #main-content {
             opacity: 0;
-            transition: opacity 1s ease;
-            max-width: 1000px;
+            transition: opacity 1.5s ease;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
 
-        header { text-align: center; margin-bottom: 60px; }
-        header h1 { font-size: 3rem; font-weight: 800; }
+        header { text-align: center; margin-bottom: 70px; }
+        header h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; }
         header h1 span { color: var(--accent); }
-        header p { color: #888; margin-top: 10px; font-size: 1.1rem; }
+        header p { color: #64748b; margin-top: 15px; font-size: 1.1rem; font-weight: 500; }
 
-        /* Social Media Grid */
         .social-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
         }
 
         .social-card {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 30px;
+            padding: 40px 30px;
+            border-radius: 35px;
             text-align: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .social-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-            background: rgba(255, 45, 85, 0.05);
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        .social-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
-        .social-card p { font-size: 0.85rem; color: #aaa; line-height: 1.5; }
-        
-        .icon-circle {
-            width: 60px; height: 60px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+        /* Icon Styling */
+        .icon-box {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
             transition: 0.3s;
+            display: inline-block;
         }
 
-        .social-card:hover .icon-circle {
-            background: var(--accent);
-            box-shadow: 0 0 20px var(--accent);
-        }
+        .yt-card:hover { border-color: var(--yt); }
+        .yt-card:hover .icon-box { color: var(--yt); transform: scale(1.1); }
+
+        .fb-card:hover { border-color: var(--fb); }
+        .fb-card:hover .icon-box { color: var(--fb); transform: scale(1.1); }
+
+        .tt-card:hover { border-color: var(--tt); }
+        .tt-card:hover .icon-box { color: var(--tt); transform: scale(1.1); }
+
+        .mv-card:hover { border-color: var(--mv); }
+        .mv-card:hover .icon-box { color: var(--mv); transform: scale(1.1); }
+
+        .social-card h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
+        .social-card p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
 
         footer {
-            margin-top: 80px;
+            margin-top: 100px;
             text-align: center;
-            font-weight: 700;
-            color: #444;
-            letter-spacing: 2px;
+            font-weight: 800;
+            color: #334155;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
         }
+        footer span { color: var(--accent); }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="logo-text">VajiraOfficial</div>
+        <div class="logo-text">VajiraOfficial Social Media</div>
         <div class="loading-bar">
             <div class="loading-progress"></div>
         </div>
@@ -152,51 +156,53 @@
     <div id="main-content">
         <header>
             <h1>Vajira<span>Official</span></h1>
-            <p>The Ultimate Social Media & Movie Hub</p>
+            <p>Your Premium Destination for Social Media Tools</p>
         </header>
 
         <div class="social-grid">
-            <div class="social-card">
-                <div class="icon-circle">YT</div>
+            <a href="ytdl.html" class="social-card yt-card">
+                <div class="icon-box"><i class="fa-brands fa-youtube"></i></div>
                 <h3>YouTube</h3>
-                <p>Download high-quality 4K videos and crystal clear MP3 audio instantly.</p>
-            </div>
+                <p>Convert and download YouTube videos in 4K or high-bitrate MP3.</p>
+            </a>
 
-            <div class="social-card">
-                <div class="icon-circle">FB</div>
+            <div class="social-card fb-card">
+                <div class="icon-box"><i class="fa-brands fa-facebook"></i></div>
                 <h3>Facebook</h3>
-                <p>Save your favorite reels, stories, and private videos in one click.</p>
+                <p>Fastest way to download Facebook Reels, Stories, and HD Videos.</p>
             </div>
 
-            <div class="social-card">
-                <div class="icon-circle">TT</div>
+            <div class="social-card tt-card">
+                <div class="icon-box"><i class="fa-brands fa-tiktok"></i></div>
                 <h3>TikTok</h3>
-                <p>Extract trending TikTok videos without any watermark in HD quality.</p>
+                <p>Get TikTok videos without watermarks instantly in high definition.</p>
             </div>
 
-            <div class="social-card">
-                <div class="icon-circle">🎬</div>
+            <div class="social-card mv-card">
+                <div class="icon-box"><i class="fa-solid fa-film"></i></div>
                 <h3>Movies</h3>
-                <p>Explore the latest releases, trailers, and hidden cinematic gems.</p>
+                <p>Browse a massive library of movie details, ratings, and trailers.</p>
             </div>
         </div>
 
         <footer>
-            VajiraOfficial <span>SOCIAL MEDIA</span>
+            VajiraOfficial <span>Social Media</span>
         </footer>
     </div>
 
     <script>
-        // Splash Screen Logic
+        // Splash screen to main content transition
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 const content = document.getElementById('main-content');
                 
                 splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-                content.style.opacity = '1';
-            }, 3000); // Exactly 3 seconds
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    content.style.opacity = '1';
+                }, 1000);
+            }, 3000);
         });
     </script>
 </body>
