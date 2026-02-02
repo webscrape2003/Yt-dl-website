@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VajiraOfficial | Movie Hub</title>
+    <title>VajiraOfficial | Movie Engine</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -11,156 +11,175 @@
             --bg: #020205;
             --mv-grad: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
         }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: white; padding: 20px; min-height: 100vh; }
-        .container { max-width: 800px; margin: auto; }
-        
-        h1 { text-align: center; font-weight: 800; font-size: 2.5rem; margin-bottom: 30px; }
-        h1 span { color: #f5576c; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: white; padding: 20px; overflow-x: hidden; }
+        .container { max-width: 900px; margin: auto; }
 
-        .search-box { display: flex; gap: 10px; margin-bottom: 40px; }
-        input { flex: 1; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: #111; color: white; outline: none; font-size: 1rem; }
-        button { padding: 0 30px; border-radius: 20px; border: none; background: var(--mv-grad); color: white; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+        /* SEARCH BOX */
+        .search-wrap { text-align: center; margin-bottom: 50px; padding-top: 40px; }
+        .search-wrap h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; }
+        .search-wrap span { color: #f5576c; }
+        .input-group { display: flex; gap: 10px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 25px; border: 1px solid var(--border); }
+        input { flex: 1; background: transparent; border: none; padding: 15px; color: white; font-size: 1rem; outline: none; }
+        button#searchBtn { background: var(--mv-grad); border: none; padding: 0 30px; border-radius: 20px; color: white; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        button#searchBtn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(245, 87, 108, 0.4); }
 
-        /* Search Results */
-        .result-item { background: var(--glass); padding: 20px; border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .result-item:hover { background: rgba(255,255,255,0.1); border-color: #f5576c; }
-        .result-item b { font-size: 0.95rem; color: #eee; }
+        /* RESULTS LIST */
+        #results-list { display: grid; gap: 12px; }
+        .movie-row { background: var(--glass); padding: 20px; border-radius: 20px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .movie-row:hover { background: rgba(255,255,255,0.1); border-color: #f5576c; transform: translateX(10px); }
+        .movie-row b { font-size: 0.95rem; flex: 1; padding-right: 20px; }
 
-        /* Details Page */
-        #details-view { display: none; background: #0a0a0c; border-radius: 35px; padding: 30px; border: 1px solid rgba(255,255,255,0.1); animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* MOVIE PROFILE PAGE */
+        #movie-profile { display: none; background: #08080a; border-radius: 40px; padding: 30px; border: 1px solid var(--border); animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .movie-flex { display: flex; gap: 25px; flex-wrap: wrap; margin-bottom: 30px; }
-        .movie-flex img { width: 220px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
-        .info { flex: 1; min-width: 300px; }
-        .info h2 { font-size: 1.8rem; margin-bottom: 15px; }
-        .desc { font-size: 0.9rem; opacity: 0.7; line-height: 1.6; margin-bottom: 15px; }
+        .back-btn { display: inline-block; margin-bottom: 25px; color: #f093fb; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
+        .profile-flex { display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 40px; }
+        .poster-img { width: 250px; border-radius: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.7); border: 2px solid var(--border); }
+        .details-info { flex: 1; min-width: 300px; }
+        .details-info h2 { font-size: 2rem; margin-bottom: 15px; line-height: 1.2; }
+        .description { font-size: 0.95rem; opacity: 0.7; line-height: 1.6; margin-bottom: 20px; }
+        .meta-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tag { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; color: #f5576c; }
 
-        .dl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .dl-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; }
-        .dl-card:hover { background: #fff; color: #000; }
-        .dl-card b { display: block; font-size: 1.1rem; }
-        .dl-card span { font-size: 0.75rem; opacity: 0.8; font-weight: 700; }
+        /* DOWNLOAD SECTION */
+        .dl-section h3 { margin-bottom: 20px; font-weight: 800; }
+        .dl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .dl-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); padding: 25px; border-radius: 25px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; }
+        .dl-card:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-5px); }
+        .dl-card b { font-size: 1.2rem; display: block; margin-bottom: 5px; }
+        .dl-card span { font-size: 0.75rem; opacity: 0.8; font-weight: 800; }
 
-        .loader { display: none; text-align: center; padding: 20px; color: #f093fb; font-weight: 800; letter-spacing: 2px; }
-        .back-btn { display: inline-block; margin-bottom: 20px; color: #f093fb; cursor: pointer; font-weight: 800; }
+        .loader { display: none; text-align: center; padding: 40px; font-weight: 800; color: #f093fb; letter-spacing: 3px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="search-view">
-        <h1>Vajira<span>Movies</span></h1>
-        <div class="search-box">
-            <input type="text" id="movieInput" placeholder="Search Sinhala Sub Movies...">
-            <button onclick="searchMovies()">SEARCH</button>
+    <div id="view-search">
+        <div class="search-wrap">
+            <h1>Vajira<span>Movies</span></h1>
+            <div class="input-group">
+                <input type="text" id="searchInput" placeholder="Search Movie (e.g. Rajasaab 2026)">
+                <button id="searchBtn" onclick="performSearch()">SEARCH</button>
+            </div>
         </div>
-        <div id="loader" class="loader">FETCHING DATA...</div>
-        <div id="resultsList"></div>
+        <div id="searchLoader" class="loader">FETCHING MOVIES...</div>
+        <div id="results-list"></div>
     </div>
 
-    <div id="details-view">
-        <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> BACK</div>
-        <div id="movieData"></div>
+    <div id="view-profile">
+        <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> BACK TO RESULTS</div>
+        <div id="profile-content"></div>
     </div>
 </div>
 
 <script>
     const API_KEY = "vajiraofficial";
 
-    async function searchMovies() {
-        const query = document.getElementById('movieInput').value;
-        const list = document.getElementById('resultsList');
-        const loader = document.getElementById('loader');
+    async function performSearch() {
+        const query = document.getElementById('searchInput').value;
+        const list = document.getElementById('results-list');
+        const loader = document.getElementById('searchLoader');
 
-        if (!query) return alert("Please enter a movie name");
+        if (!query) return;
 
         list.innerHTML = "";
         loader.style.display = "block";
 
         try {
-            // Fix: Accessing nested data based on your JSON structure
+            // Path: data.data.data from your provided JSON
             const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/search?q=${query}&apikey=${API_KEY}`);
-            const json = await res.json();
-            const movies = json.data.data.data;
+            const result = await res.json();
+            const movies = result.data.data.data;
 
-            movies.forEach(item => {
-                if (item.title) {
-                    const div = document.createElement('div');
-                    div.className = 'result-item';
-                    div.innerHTML = `<b>${item.title}</b> <i class="fa-solid fa-circle-play" style="color:#f5576c"></i>`;
-                    div.onclick = () => loadDetails(item.link);
-                    list.appendChild(div);
+            movies.forEach(mv => {
+                if (mv.title && mv.link) {
+                    const row = document.createElement('div');
+                    row.className = 'movie-row';
+                    row.innerHTML = `<b>${mv.title}</b> <i class="fa-solid fa-circle-play" style="color:#f5576c"></i>`;
+                    row.onclick = () => showMovieProfile(mv.link);
+                    list.appendChild(row);
                 }
             });
-        } catch (err) {
-            alert("Search Error. Check your internet.");
+        } catch (e) {
+            alert("Search failed. Check connection.");
         } finally {
             loader.style.display = "none";
         }
     }
 
-    async function loadDetails(url) {
-        document.getElementById('search-view').style.display = "none";
-        document.getElementById('details-view').style.display = "block";
-        const content = document.getElementById('movieData');
-        content.innerHTML = "<div class='loader' style='display:block'>LOADING MOVIE INFO...</div>";
+    async function showMovieProfile(movieUrl) {
+        document.getElementById('view-search').style.display = "none";
+        document.getElementById('view-profile').style.display = "block";
+        const container = document.getElementById('profile-content');
+        container.innerHTML = "<div class='loader' style='display:block'>LOADING DETAILS...</div>";
 
         try {
-            // Fix: Updated path for Details API
-            const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/details?url=${url}&apikey=${API_KEY}`);
-            const json = await res.json();
-            const movie = json.data.data.mainDetails;
-            const dlLinks = json.data.data.dllinks.DownloadLinks;
+            // Path: data.data from your provided Details JSON
+            const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/details?url=${movieUrl}&apikey=${API_KEY}`);
+            const result = await res.json();
+            const info = result.data.data.mainDetails;
+            const downloads = result.data.data.dllinks.DownloadLinks;
 
-            let dlHtml = "";
-            dlLinks.forEach(link => {
-                dlHtml += `
-                    <div class="dl-card" onclick="startDownload('${link.link}')">
-                        <b>${link.quality}</b>
-                        <span>${link.size} • ${link.type}</span>
+            let downloadButtons = "";
+            downloads.forEach(dl => {
+                downloadButtons += `
+                    <div class="dl-card" onclick="finalDownload('${dl.link}')">
+                        <b>${dl.quality}</b>
+                        <span>${dl.size} • ${dl.type}</span>
                     </div>`;
             });
 
-            content.innerHTML = `
-                <div class="movie-flex">
-                    <img src="${movie.imageUrl}">
-                    <div class="info">
-                        <h2>${movie.maintitle}</h2>
-                        <p class="desc">${movie.description}</p>
-                        <p><b>⭐ Rating:</b> ${movie.imdbRating}</p>
-                        <p><b>📅 Year:</b> ${movie.dateCreated}</p>
-                        <p><b>🌍 Country:</b> ${movie.country}</p>
+            container.innerHTML = `
+                <div class="profile-flex">
+                    <img src="${info.imageUrl}" class="poster-img">
+                    <div class="details-info">
+                        <h2>${info.maintitle}</h2>
+                        <div class="meta-tags">
+                            <span class="tag">${info.dateCreated}</span>
+                            <span class="tag">${info.imdbRating}</span>
+                            <span class="tag">${info.country}</span>
+                        </div>
+                        <p class="description">${info.description}</p>
+                        <p style="margin-bottom:8px"><b>🎬 Director:</b> ${info.director}</p>
+                        <p><b>🎭 Genres:</b> ${info.genres.join(', ')}</p>
                     </div>
                 </div>
-                <h3 style="margin-bottom:20px">Direct Download Links</h3>
-                <div class="dl-grid">${dlHtml}</div>
+                <div class="dl-section">
+                    <h3>Download Subtitled Movie</h3>
+                    <div class="dl-grid">${downloadButtons}</div>
+                </div>
             `;
-        } catch (err) {
-            content.innerHTML = "<p>Error loading movie details.</p>";
+        } catch (e) {
+            container.innerHTML = "Error loading movie info.";
         }
     }
 
-    async function startDownload(dlUrl) {
-        alert("Bypassing links... Please wait.");
+    async function finalDownload(shortLink) {
+        alert("Processing direct link... please wait.");
         try {
-            const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/download?url=${dlUrl}&apikey=${API_KEY}`);
-            const json = await res.json();
-            if (json.data.data.link) {
-                window.location.href = json.data.data.link;
+            // Path: data.data.link from your Download JSON
+            const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/download?url=${shortLink}&apikey=${API_KEY}`);
+            const result = await res.json();
+            const finalLink = result.data.data.link;
+
+            if (finalLink) {
+                window.location.href = finalLink;
             } else {
-                alert("Download link not found.");
+                alert("Could not extract link.");
             }
-        } catch (err) {
-            alert("Download API Error.");
+        } catch (e) {
+            alert("Error in direct download API.");
         }
     }
 
     function goBack() {
-        document.getElementById('search-view').style.display = "block";
-        document.getElementById('details-view').style.display = "none";
+        document.getElementById('view-search').style.display = "block";
+        document.getElementById('view-profile').style.display = "none";
     }
 </script>
 
