@@ -3,62 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vajira Movie Box - Bug Fixed</title>
+    <title>Vajira Movie Box - Refined Layout</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #ff1e2a; --bg: #0a0a0a; --card: #161616; --text: #ffffff; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
         
-        .hero { padding: 50px 20px; background: linear-gradient(180deg, #111 0%, #0a0a0a 100%); text-align: center; border-bottom: 1px solid #222; }
-        .hero h1 { font-weight: 800; font-size: 2.2rem; margin: 0 0 10px 0; color: var(--primary); }
-        
-        .search-box { max-width: 650px; margin: 20px auto; display: flex; background: #1a1a1a; padding: 5px; border-radius: 50px; border: 2px solid #333; }
-        input { flex: 1; background: transparent; border: none; color: white; padding: 15px 20px; outline: none; font-size: 1rem; }
-        .btn-go { background: var(--primary); color: white; border: none; padding: 0 30px; border-radius: 50px; font-weight: 800; cursor: pointer; }
+        /* Search Header */
+        .hero { padding: 40px 20px; background: #000; text-align: center; border-bottom: 1px solid #222; }
+        .search-box { max-width: 600px; margin: 0 auto; display: flex; background: #1a1a1a; padding: 5px; border-radius: 50px; border: 1px solid #333; }
+        input { flex: 1; background: transparent; border: none; color: white; padding: 12px 20px; outline: none; }
+        .btn-go { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 50px; font-weight: 800; cursor: pointer; }
 
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
-        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
-        .movie-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; cursor: pointer; transition: 0.3s; position: relative; }
-        .movie-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .img-box { position: relative; padding-top: 145%; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        /* Grid Layout */
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .movie-card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; cursor: pointer; }
+        .img-box { position: relative; padding-top: 140%; }
         .img-box img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .card-title { padding: 12px; text-align: center; font-weight: 600; font-size: 0.8rem; }
+        .card-title { padding: 10px; text-align: center; font-size: 0.8rem; font-weight: 600; }
 
+        /* Detail View Fixed Layout */
         #detailView { display: none; }
-        .detail-card { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid #333; display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
-        .poster-detail { width: 100%; border-radius: 12px; border: 1px solid #444; }
+        .detail-header { position: relative; width: 100%; height: 300px; overflow: hidden; border-radius: 15px; margin-bottom: 20px; }
+        .detail-backdrop { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5); }
+        .detail-title-overlay { position: absolute; bottom: 20px; left: 20px; right: 20px; }
         
-        .gallery-wrapper { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin: 15px 0; }
-        .gallery-wrapper img { height: 110px; border-radius: 8px; border: 1px solid #333; cursor: pointer; }
+        .info-section { background: var(--card); border-radius: 15px; padding: 20px; border: 1px solid #222; }
+        .description-text { color: #bbb; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
 
-        .dl-row { display: flex; justify-content: space-between; align-items: center; background: #222; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #333; }
-        .dl-btn { background: #00d26a; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 800; cursor: pointer; }
+        /* Screenshots */
+        .section-label { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .gallery-wrapper { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+        .gallery-wrapper img { height: 100px; border-radius: 5px; border: 1px solid #333; flex-shrink: 0; }
 
-        @media (max-width: 768px) {
-            .detail-card { grid-template-columns: 1fr; }
+        /* Download Rows */
+        .dl-row { display: flex; justify-content: space-between; align-items: center; background: #222; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--primary); }
+        .dl-info b { font-size: 0.9rem; }
+        .dl-info small { color: #888; display: block; }
+        .dl-btn { background: var(--primary); color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+
+        @media (max-width: 600px) {
+            .detail-header { height: 200px; }
             .movie-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
-<div class="hero">
-    <h1>VAJIRA MOVIE BOX</h1>
+<div class="hero" id="headerNav">
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search Movie Name...">
-        <button class="btn-go" onclick="searchMovies()">SEARCH</button>
+        <input type="text" id="searchInput" placeholder="Search movies...">
+        <button class="btn-go" onclick="searchMovies()">GO</button>
     </div>
 </div>
 
 <div class="container">
-    <div id="status" style="text-align:center; margin-bottom: 20px; font-weight: bold; color: var(--primary);"></div>
+    <div id="status" style="text-align:center; font-size: 0.8rem; color: var(--primary); margin-bottom: 10px;"></div>
     
     <div id="gridView">
         <div class="movie-grid" id="movieGrid"></div>
     </div>
 
     <div id="detailView">
-        <button onclick="showView('grid')" style="background:#222; color:#fff; border:1px solid #444; padding:8px 15px; border-radius:5px; cursor:pointer; margin-bottom:20px;">← BACK</button>
+        <button onclick="showView('grid')" style="background:none; color:#888; border:1px solid #444; padding:5px 12px; border-radius:5px; cursor:pointer; margin-bottom:15px; font-size: 0.8rem;">← BACK</button>
         <div id="detailContent"></div>
     </div>
 </div>
@@ -70,109 +79,83 @@
     function showView(view) {
         document.getElementById('gridView').style.display = view === 'grid' ? 'block' : 'none';
         document.getElementById('detailView').style.display = view === 'detail' ? 'block' : 'none';
-        if(view === 'grid') document.getElementById('status').innerHTML = "";
-        window.scrollTo(0,0);
+        document.getElementById('headerNav').style.display = view === 'grid' ? 'block' : 'none';
+        if(view === 'grid') window.scrollTo(0,0);
     }
 
-    async function secureFetch(targetUrl) {
-        try {
-            const resp = await fetch(PROXY + encodeURIComponent(targetUrl));
-            const data = await resp.json();
-            return JSON.parse(data.contents);
-        } catch (err) {
-            console.error("Fetch Error:", err);
-            return null;
-        }
+    async function secureFetch(url) {
+        const resp = await fetch(PROXY + encodeURIComponent(url));
+        const data = await resp.json();
+        return JSON.parse(data.contents);
     }
 
     async function searchMovies() {
-        const query = document.getElementById('searchInput').value.trim();
+        const query = document.getElementById('searchInput').value;
         if (!query) return;
-
-        showView('grid');
-        const grid = document.getElementById('movieGrid');
-        const status = document.getElementById('status');
-        grid.innerHTML = "";
-        status.innerHTML = "Searching...";
-
-        const result = await secureFetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/search?q=${encodeURIComponent(query)}&apikey=${API_KEY}`);
-        
-        if (!result || !result.data) {
-            status.innerHTML = "Server Busy. Try Again.";
-            return;
-        }
-
-        const movies = result.data.data?.data || result.data.data || [];
-        status.innerHTML = movies.length ? "" : "No movies found.";
-        
-        grid.innerHTML = movies.map(m => `
-            <div class="movie-card" onclick="loadDetails('${m.link}')">
-                <div class="img-box"><img src="${m.imageSrc || m.image || 'https://via.placeholder.com/200x300'}"></div>
-                <div class="card-title">${m.title}</div>
-            </div>
-        `).join('');
+        document.getElementById('status').innerText = "SEARCHING...";
+        try {
+            const res = await secureFetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/search?q=${encodeURIComponent(query)}&apikey=${API_KEY}`);
+            const movies = res.data?.data?.data || res.data?.data || [];
+            document.getElementById('movieGrid').innerHTML = movies.map(m => `
+                <div class="movie-card" onclick="loadDetails('${m.link}')">
+                    <div class="img-box"><img src="${m.imageSrc || m.image}"></div>
+                    <div class="card-title">${m.title}</div>
+                </div>
+            `).join('');
+            document.getElementById('status').innerText = "";
+        } catch (e) { document.getElementById('status').innerText = "ERROR TRY AGAIN"; }
     }
 
-    async function loadDetails(movieUrl) {
+    async function loadDetails(url) {
         showView('detail');
-        const content = document.getElementById('detailContent');
-        const status = document.getElementById('status');
-        status.innerHTML = "Loading Movie Details...";
-        content.innerHTML = "";
+        const container = document.getElementById('detailContent');
+        container.innerHTML = "<p style='text-align:center;'>LOADING...</p>";
+        try {
+            const res = await secureFetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${encodeURIComponent(url)}&apikey=${API_KEY}`);
+            const d = res.data.data;
+            const main = d.mainDetails;
+            const extra = d.moviedata;
+            const links = d.dllinks.directDownloadLinks;
 
-        const result = await secureFetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${encodeURIComponent(movieUrl)}&apikey=${API_KEY}`);
-        
-        if (!result || !result.data || !result.data.data) {
-            status.innerHTML = "Error loading details. Try again.";
-            return;
-        }
-
-        const data = result.data.data;
-        const main = data.mainDetails || {};
-        const extra = data.moviedata || {};
-        const links = data.dllinks?.directDownloadLinks || [];
-        const screenshots = extra.imageUrls || [];
-
-        status.innerHTML = "";
-        content.innerHTML = `
-            <div class="detail-card">
-                <img src="${main.imageUrl || 'https://via.placeholder.com/300x450'}" class="poster-detail">
-                <div>
-                    <h2 style="margin:0;">${main.maintitle || 'Untitled Movie'}</h2>
-                    <p style="color:#aaa; font-size:0.9rem; margin:15px 0;">${extra.description || 'No description available for this title.'}</p>
-                    
-                    ${screenshots.length > 0 ? `
-                        <div style="font-size:0.75rem; color:var(--primary); font-weight:800; text-transform:uppercase;">Screenshots</div>
-                        <div class="gallery-wrapper">
-                            ${screenshots.map(url => `<img src="${url}" onclick="window.open(this.src)">`).join('')}
-                        </div>
-                    ` : ''}
-
-                    <div style="margin-top:20px;">
-                        <div style="font-size:0.75rem; color:var(--primary); font-weight:800; text-transform:uppercase; margin-bottom:10px;">Download Links</div>
-                        ${links.length > 0 ? links.map(l => `
-                            <div class="dl-row">
-                                <div><b>${l.quality}</b><br><small>${l.size}</small></div>
-                                <button class="dl-btn" onclick="generateDownload('${l.link}')">DOWNLOAD</button>
-                            </div>
-                        `).join('') : '<p>No download links available.</p>'}
+            container.innerHTML = `
+                <div class="detail-header">
+                    <img src="${main.imageUrl}" class="detail-backdrop">
+                    <div class="detail-title-overlay">
+                        <h2 style="margin:0; font-size: 1.5rem;">${main.maintitle}</h2>
                     </div>
                 </div>
-            </div>
-        `;
+                <div class="info-section">
+                    <p class="description-text">${extra.description}</p>
+                    
+                    <span class="section-label">Media Gallery</span>
+                    <div class="gallery-wrapper">
+                        ${extra.imageUrls.map(img => `<img src="${img}">`).join('')}
+                    </div>
+
+                    <span class="section-label">Download Options</span>
+                    <div class="download-list">
+                        ${links.map(l => `
+                            <div class="dl-row">
+                                <div class="dl-info">
+                                    <b>${l.quality}</b>
+                                    <small>${l.size} • Direct Link</small>
+                                </div>
+                                <button class="dl-btn" onclick="downloadFile('${l.link}')">DOWNLOAD</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } catch (e) { container.innerHTML = "<p>LOAD ERROR</p>"; }
     }
 
-    async function generateDownload(dlUrl) {
-        const result = await secureFetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(dlUrl)}&apikey=${API_KEY}`);
-        if (result && result.data?.data?.link) {
-            const final = result.data.data.link.replace('api/file/', 'u/').split('?')[0];
-            window.location.href = final;
-        } else {
-            alert("Download link failed to generate.");
-        }
+    async function downloadFile(url) {
+        try {
+            const res = await secureFetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(url)}&apikey=${API_KEY}`);
+            const link = res.data.data.link;
+            window.location.href = link.replace('api/file/', 'u/').split('?')[0];
+        } catch (e) { alert("Download error"); }
     }
-
-    document.getElementById('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') searchMovies(); });
 </script>
 </body>
 </html>
