@@ -6,135 +6,144 @@
     <title>Vajira Movie Detailer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #121212; color: #e0e0e0; font-family: sans-serif; }
-        .movie-card { background-color: #1e1e1e; border: 1px solid #333; border-radius: 8px; }
-        .btn-download { background-color: #e50914; transition: 0.3s; }
-        .btn-download:hover { background-color: #b20710; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        body { background-color: #1a1a1a; color: #d1d1d1; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .main-container { background-color: #222222; border: 1px solid #333; border-radius: 8px; overflow: hidden; }
+        .sidebar { background-color: #2a2a2a; border-right: 1px solid #333; min-width: 240px; }
+        .imdb-badge { background-color: #f5c518; color: #000; font-weight: 900; padding: 2px 8px; border-radius: 4px; }
+        .download-table { width: 100%; border-collapse: collapse; background: #1a1a1a; border-radius: 5px; overflow: hidden; }
+        .download-table th, .download-table td { padding: 12px; border: 1px solid #333; text-align: left; }
+        .btn-download { background-color: #ff4d4d; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold; transition: 0.3s; }
+        .btn-download:hover { background-color: #cc0000; }
+        .screenshot-img { height: 60px; border-radius: 4px; border: 1px solid #444; object-fit: cover; }
+        input { background: #111 !important; border: 1px solid #444; color: white; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 flex items-center justify-center min-h-screen">
 
-    <div class="max-w-4xl mx-auto">
-        <div class="flex gap-2 mb-8 bg-[#1e1e1e] p-2 rounded border border-gray-700">
-            <input id="movieUrl" type="text" placeholder="https://pirate.lk/movies/..." 
-                   class="flex-1 bg-transparent p-2 outline-none text-sm" value="https://pirate.lk/movies/nice-view-2022-sinhala-sub/">
-            <button onclick="fetchMovieDetails()" class="bg-red-600 px-4 py-2 rounded text-sm font-bold">Get Details</button>
+    <div class="max-w-5xl w-full">
+        <div class="flex items-center gap-2 mb-4 bg-[#111] p-2 rounded border border-gray-700">
+            <span class="text-gray-500 px-2">🔍</span>
+            <input id="movieUrl" type="text" value="https://pirate.lk/movies/nice-view-2022-sinhala-sub/" 
+                   class="flex-1 bg-transparent outline-none text-sm p-1" placeholder="Enter URL...">
+            <button onclick="fetchMovie()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded text-sm font-bold">Get Details</button>
         </div>
 
-        <div id="loader" class="hidden text-center text-red-500 my-10">Fetching all details...</div>
+        <div id="content" class="main-container flex flex-col md:flex-row hidden">
+            
+            <div class="sidebar p-6 flex flex-col items-center">
+                <img id="poster" src="" class="w-full rounded shadow-lg border border-gray-500 mb-6" alt="Poster">
+                <div class="w-full text-xs space-y-3 text-gray-400">
+                    <p>Director: <span id="director" class="text-white block mt-1"></span></p>
+                    <p>Runtime: <span id="runtime" class="text-white block mt-1"></span></p>
+                    <p>Country: <span id="country" class="text-white block mt-1"></span></p>
+                    <p>Date Created: <span id="date" class="text-white block mt-1"></span></p>
+                </div>
+            </div>
 
-        <div id="movieGrid" class="movie-card p-6 hidden">
-            <div class="flex flex-col md:flex-row gap-8">
-                
-                <div class="w-full md:w-1/3">
-                    <img id="mainImg" src="" class="w-full rounded-lg shadow-2xl border border-gray-600" alt="Poster">
-                    <div class="mt-4 space-y-2 text-xs text-gray-400">
-                        <p>Director: <span id="dirName" class="text-gray-200"></span></p>
-                        <p>Runtime: <span id="runtime" class="text-gray-200"></span></p>
-                        <p>Country: <span id="country" class="text-gray-200"></span></p>
-                        <p>Created: <span id="dateCreated" class="text-gray-200"></span></p>
+            <div class="flex-1 p-8">
+                <h1 id="title" class="text-3xl font-bold text-white mb-1"></h1>
+                <p class="text-gray-500 text-sm mb-4 italic">Fetching all details here</p>
+
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="imdb-badge">IMDb</span>
+                    <div>
+                        <span id="rating" class="font-bold text-lg text-white"></span>
+                        <span id="votes" class="text-xs text-gray-500 ml-2"></span>
                     </div>
                 </div>
 
-                <div class="w-full md:w-2/3">
-                    <h1 id="movieTitle" class="text-3xl font-bold mb-2"></h1>
-                    <div class="flex items-center gap-4 mb-4">
-                        <span class="bg-yellow-500 text-black px-2 py-1 rounded font-bold">IMDB</span>
-                        <span id="imdbRating" class="text-lg font-bold"></span>
-                        <span id="votes" class="text-gray-400 text-sm"></span>
-                    </div>
+                <div id="genres" class="flex gap-2 mb-6"></div>
 
-                    <div id="genreContainer" class="flex flex-wrap gap-2 mb-4"></div>
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold border-b border-gray-700 pb-1 mb-3">Screenshots-Slider</h3>
+                    <div id="screenshots" class="flex gap-2 overflow-x-auto pb-2"></div>
+                </div>
 
-                    <p id="description" class="text-sm text-gray-400 leading-relaxed mb-6 italic"></p>
-
-                    <h3 class="text-sm font-bold border-b border-gray-700 pb-1 mb-3">Screenshots</h3>
-                    <div id="screenshotSlider" class="flex gap-2 overflow-x-auto scrollbar-hide mb-6"></div>
-
-                    <h3 class="text-sm font-bold border-b border-gray-700 pb-1 mb-3">Download Links</h3>
-                    <div id="downloadBox" class="space-y-2">
-                        </div>
+                <div class="mb-2">
+                    <h3 class="text-sm font-bold border-b border-gray-700 pb-1 mb-3">Download box</h3>
+                    <table class="download-table text-sm">
+                        <thead class="bg-[#222]">
+                            <tr>
+                                <th>#</th>
+                                <th>Quality</th>
+                                <th>Size & Platform</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="downloadList"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
+        <div id="loading" class="text-center py-20 text-gray-500">Enter a URL and click Get Details...</div>
     </div>
 
     <script>
         const API_KEY = "vajiraofficial";
 
-        async function fetchMovieDetails() {
-            const movieUrl = document.getElementById('movieUrl').value;
-            const loader = document.getElementById('loader');
-            const grid = document.getElementById('movieGrid');
-
-            if(!movieUrl) return alert("Please enter a URL");
-
-            loader.classList.remove('hidden');
-            grid.classList.add('hidden');
-
+        async function fetchMovie() {
+            const url = document.getElementById('movieUrl').value;
+            const content = document.getElementById('content');
+            const loading = document.getElementById('loading');
+            
+            loading.innerText = "Loading data...";
+            
             try {
-                const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${movieUrl}&apikey=${API_KEY}`);
-                const json = await res.json();
-                const movie = json.data.data;
+                const response = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/movie?url=${url}&apikey=${API_KEY}`);
+                const resData = await response.json();
+                const movie = resData.data.data;
 
-                // Set Data
-                document.getElementById('movieTitle').innerText = movie.mainDetails.maintitle;
-                document.getElementById('mainImg').src = movie.mainDetails.imageUrl;
-                document.getElementById('dirName').innerText = movie.moviedata.director;
+                // Map UI
+                document.getElementById('title').innerText = movie.mainDetails.maintitle;
+                document.getElementById('poster').src = movie.mainDetails.imageUrl;
+                document.getElementById('director').innerText = movie.moviedata.director;
                 document.getElementById('runtime').innerText = movie.mainDetails.runtime;
                 document.getElementById('country').innerText = movie.mainDetails.country;
-                document.getElementById('dateCreated').innerText = movie.mainDetails.dateCreated;
-                document.getElementById('imdbRating').innerText = movie.moviedata.imdbRating;
+                document.getElementById('date').innerText = movie.mainDetails.dateCreated;
+                document.getElementById('rating').innerText = movie.moviedata.imdbRating + "/10";
                 document.getElementById('votes').innerText = movie.moviedata.imdbvotesCount;
-                document.getElementById('description').innerText = movie.moviedata.description;
 
                 // Genres
-                const genreBox = document.getElementById('genreContainer');
-                genreBox.innerHTML = '';
-                movie.mainDetails.genres.forEach(g => {
-                    genreBox.innerHTML += `<span class="bg-gray-800 px-3 py-1 rounded-full text-xs">${g}</span>`;
-                });
+                const genreDiv = document.getElementById('genres');
+                genreDiv.innerHTML = movie.mainDetails.genres.map(g => 
+                    `<span class="bg-gray-700 text-[10px] uppercase px-2 py-1 rounded">${g}</span>`
+                ).join('');
 
                 // Screenshots
-                const screenBox = document.getElementById('screenshotSlider');
-                screenBox.innerHTML = '';
-                movie.moviedata.imageUrls.forEach(url => {
-                    screenBox.innerHTML += `<img src="${url}" class="h-20 rounded border border-gray-700">`;
-                });
+                const screenDiv = document.getElementById('screenshots');
+                screenDiv.innerHTML = movie.moviedata.imageUrls.map(img => 
+                    `<img src="${img}" class="screenshot-img">`
+                ).join('');
 
                 // Downloads
-                const dlBox = document.getElementById('downloadBox');
-                dlBox.innerHTML = '';
-                movie.dllinks.directDownloadLinks.forEach((link, index) => {
-                    dlBox.innerHTML += `
-                        <div class="flex justify-between items-center bg-black/30 p-3 rounded border border-gray-800">
-                            <div>
-                                <p class="text-sm font-bold text-red-500">${link.quality}</p>
-                                <p class="text-xs text-gray-500">${link.size} | ${link.platform}</p>
-                            </div>
-                            <button onclick="resolveDownload('${link.link}')" class="btn-download px-4 py-1 rounded text-sm font-bold">Download</button>
-                        </div>
-                    `;
-                });
+                const dlBody = document.getElementById('downloadList');
+                dlBody.innerHTML = movie.dllinks.directDownloadLinks.map((dl, index) => `
+                    <tr>
+                        <td class="text-gray-500">${index + 1}</td>
+                        <td class="text-red-400 font-bold">${dl.quality}</td>
+                        <td class="text-xs">${dl.size} <span class="text-gray-600 ml-2">(${dl.platform})</span></td>
+                        <td><button onclick="getFinalLink('${dl.link}')" class="btn-download text-xs">Download</button></td>
+                    </tr>
+                `).join('');
 
-                grid.classList.remove('hidden');
-            } catch (err) {
-                alert("Error fetching data");
-            } finally {
-                loader.classList.add('hidden');
+                content.classList.remove('hidden');
+                loading.classList.add('hidden');
+
+            } catch (error) {
+                loading.innerText = "Error loading movie. Check URL or API Key.";
             }
         }
 
-        async function resolveDownload(shortUrl) {
+        async function getFinalLink(dlUrl) {
             try {
-                const res = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${shortUrl}&apikey=${API_KEY}`);
-                const json = await res.json();
-                if(json.data.data.link) {
-                    window.open(json.data.data.link, '_blank');
+                const response = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${dlUrl}&apikey=${API_KEY}`);
+                const resData = await response.json();
+                if(resData.data.data.link) {
+                    window.open(resData.data.data.link, '_blank');
                 }
-            } catch (err) {
-                alert("Error resolving download link");
+            } catch (e) {
+                alert("Failed to fetch download link.");
             }
         }
     </script>
