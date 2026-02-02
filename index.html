@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VajiraOfficial | Social Hub</title>
+    <title>VajiraOfficial | Ultra Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #ff2d55;
-            --bg: #07080a;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --yt: #FF0000;
-            --fb: #1877F2;
+            --bg: #050505;
+            --yt: #ff0050;
+            --fb: #0084ff;
             --tt: #00f2ea;
-            --mv: #ff9f43;
+            --mv: #ffbd00;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,185 +21,169 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg);
             color: white;
-            overflow: hidden; /* Prevent scroll during splash */
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* --- SPLASH SCREEN ANIMATION --- */
+        /* --- VIBRANT SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
+            inset: 0;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: transform 1.2s cubic-bezier(1, 0, 0, 1), opacity 1s;
+            transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        .logo-text {
-            font-size: 3rem;
+        .splash-logo {
+            font-size: 3.5rem;
             font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(90deg, #fff, var(--accent), #fff);
-            background-size: 200%;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #ff0050, #0084ff, #00f2ea);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 2s infinite linear;
+            -webkit-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
         }
 
-        .loading-bar {
-            width: 180px;
-            height: 2px;
-            background: rgba(255,255,255,0.05);
-            margin-top: 30px;
-            border-radius: 10px;
-            overflow: hidden;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
         }
 
-        .loading-progress {
-            width: 0%;
-            height: 100%;
-            background: var(--accent);
-            animation: progress 3s forwards cubic-bezier(0.445, 0.05, 0.55, 0.95);
+        /* --- DYNAMIC BACKGROUND --- */
+        .mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(at 0% 0%, rgba(255, 0, 80, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 132, 255, 0.15) 0px, transparent 50%);
+            z-index: -1;
         }
 
-        @keyframes shimmer { 0% { background-position: -200%; } 100% { background-position: 200%; } }
-        @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
-
-        /* --- MAIN CONTENT --- */
+        /* --- CONTENT --- */
         #main-content {
             opacity: 0;
-            visibility: hidden;
-            max-width: 1100px;
-            margin: 0 auto;
+            transform: scale(0.9);
+            transition: all 1s ease-out;
             padding: 60px 20px;
-            height: 100vh;
-            overflow-y: auto;
+            max-width: 1200px;
+            margin: auto;
         }
 
-        header { 
-            text-align: center; 
-            margin-bottom: 60px;
-            animation: slideDown 1s ease forwards;
-        }
+        header { text-align: center; margin-bottom: 80px; }
+        header h1 { font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; }
+        header h1 span { color: var(--yt); }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Social Media Grid */
-        .social-grid {
+        /* --- COLORFUL CARDS --- */
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 25px;
-            perspective: 1000px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
         }
 
-        .social-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 45px 30px;
-            border-radius: 40px;
+        .card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 50px 30px;
             text-align: center;
             text-decoration: none;
-            color: inherit;
-            display: block;
-            backdrop-filter: blur(15px);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            opacity: 0; 
-            transform: translateY(40px); /* Initial state for animation */
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Animation class added via JS */
-        .social-card.reveal {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .social-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.07);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-
-        .icon-box {
-            font-size: 3rem;
+        .card i {
+            font-size: 3.5rem;
             margin-bottom: 25px;
-            display: inline-block;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: 0.5s;
         }
 
-        .social-card:hover .icon-box {
-            transform: scale(1.2) rotate(8deg);
-        }
+        /* Individual Card Colors */
+        .yt { border-bottom: 4px solid var(--yt); }
+        .yt i { color: var(--yt); }
+        .yt:hover { background: rgba(255, 0, 80, 0.1); box-shadow: 0 20px 40px rgba(255, 0, 80, 0.2); }
 
-        /* Brand Colors on Hover */
-        .yt-card:hover .icon-box { color: var(--yt); filter: drop-shadow(0 0 15px var(--yt)); }
-        .fb-card:hover .icon-box { color: var(--fb); filter: drop-shadow(0 0 15px var(--fb)); }
-        .tt-card:hover .icon-box { color: var(--tt); filter: drop-shadow(0 0 15px var(--tt)); }
-        .mv-card:hover .icon-box { color: var(--mv); filter: drop-shadow(0 0 15px var(--mv)); }
+        .fb { border-bottom: 4px solid var(--fb); }
+        .fb i { color: var(--fb); }
+        .fb:hover { background: rgba(0, 132, 255, 0.1); box-shadow: 0 20px 40px rgba(0, 132, 255, 0.2); }
 
-        .social-card h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; }
-        .social-card p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
-        
+        .tt { border-bottom: 4px solid var(--tt); }
+        .tt i { color: var(--tt); }
+        .tt:hover { background: rgba(0, 242, 234, 0.1); box-shadow: 0 20px 40px rgba(0, 242, 234, 0.2); }
+
+        .mv { border-bottom: 4px solid var(--mv); }
+        .mv i { color: var(--mv); }
+        .mv:hover { background: rgba(255, 189, 0, 0.1); box-shadow: 0 20px 40px rgba(255, 189, 0, 0.2); }
+
+        .card h3 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 800; }
+        .card p { font-size: 0.95rem; color: #ccc; line-height: 1.6; }
+
+        .card:hover i { transform: scale(1.2) rotate(-10deg); }
+        .card:hover { transform: translateY(-15px); }
+
         footer {
-            margin-top: 80px;
+            margin-top: 100px;
             text-align: center;
             font-weight: 800;
-            color: #222;
-            letter-spacing: 4px;
-            font-size: 0.8rem;
+            letter-spacing: 5px;
+            color: #333;
             text-transform: uppercase;
         }
-        footer span { color: var(--accent); }
     </style>
 </head>
 <body>
 
+    <div class="mesh"></div>
+
     <div id="splash-screen">
-        <div class="logo-text">VajiraOfficial</div>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
+        <div class="splash-logo">VajiraOfficial</div>
+        <p style="color: #666; margin-top: 15px; letter-spacing: 2px;">LOADING EXPERIENCE</p>
     </div>
 
     <div id="main-content">
         <header>
             <h1>Vajira<span>Official</span></h1>
-            <p>The Ultimate Social Media & Movie Hub</p>
+            <p style="color: #888; font-weight: 600;">The Ultimate Multimedia Powerhouse</p>
         </header>
 
-        <div class="social-grid">
-            <a href="ytdl.html" class="social-card yt-card">
-                <div class="icon-box"><i class="fa-brands fa-youtube"></i></div>
+        <div class="grid">
+            <a href="ytdl.html" class="card yt">
+                <i class="fa-brands fa-youtube"></i>
                 <h3>YouTube</h3>
-                <p>Download high-quality 4K videos and crystal clear MP3 audio instantly.</p>
+                <p>Rip 4K videos and 320kbps audio in seconds.</p>
             </a>
 
-            <a href="#" class="social-card fb-card">
-                <div class="icon-box"><i class="fa-brands fa-facebook"></i></div>
+            <a href="#" class="card fb">
+                <i class="fa-brands fa-facebook"></i>
                 <h3>Facebook</h3>
-                <p>Save your favorite reels, stories, and private videos in one click.</p>
+                <p>Grab HD Reels and Stories with one tap.</p>
             </a>
 
-            <a href="#" class="social-card tt-card">
-                <div class="icon-box"><i class="fa-brands fa-tiktok"></i></div>
+            <a href="#" class="card tt">
+                <i class="fa-brands fa-tiktok"></i>
                 <h3>TikTok</h3>
-                <p>Extract trending TikTok videos without any watermark in HD quality.</p>
+                <p>No watermark, pure HD quality downloads.</p>
             </a>
 
-            <a href="#" class="social-card mv-card">
-                <div class="icon-box"><i class="fa-solid fa-film"></i></div>
+            <a href="#" class="card mv">
+                <i class="fa-solid fa-clapperboard"></i>
                 <h3>Movies</h3>
-                <p>Explore the latest releases, trailers, and hidden cinematic gems.</p>
+                <p>Everything about the latest cinema hits.</p>
             </a>
         </div>
 
         <footer>
-            VajiraOfficial <span>SOCIAL MEDIA</span>
+            VajiraOfficial <span>Social Media</span>
         </footer>
     </div>
 
@@ -212,28 +193,16 @@
                 const splash = document.getElementById('splash-screen');
                 const content = document.getElementById('main-content');
                 
-                // Curtain slide up animation
-                splash.style.transform = 'translateY(-100%)';
+                splash.style.opacity = '0';
+                splash.style.transform = 'scale(1.1)';
                 
                 setTimeout(() => {
                     splash.style.display = 'none';
                     content.style.opacity = '1';
-                    content.style.visibility = 'visible';
-                    document.body.style.overflowY = 'auto';
-                    revealCards();
+                    content.style.transform = 'scale(1)';
                 }, 800);
-            }, 3000); 
+            }, 3000);
         });
-
-        // Function to reveal cards one by one
-        function revealCards() {
-            const cards = document.querySelectorAll('.social-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('reveal');
-                }, index * 200); // 200ms delay between each card
-            });
-        }
     </script>
 </body>
 </html>
