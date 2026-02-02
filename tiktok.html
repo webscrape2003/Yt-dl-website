@@ -22,86 +22,86 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
-        .main-wrapper { width: 100%; max-width: 450px; }
+        .main-wrapper { width: 100%; max-width: 420px; }
 
-        /* --- GLASS SEARCH SECTION --- */
+        /* --- GLASS BOX --- */
         .glass-box {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
-            padding: 30px;
+            padding: 25px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
             text-align: center;
         }
 
-        .logo h2 { font-weight: 800; font-size: 2rem; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .logo h2 { font-weight: 800; font-size: 1.8rem; margin-bottom: 20px; letter-spacing: -1.5px; }
         .logo span { color: var(--accent); text-shadow: 0 0 20px var(--glow); }
 
-        .search-stack { display: flex; flex-direction: column; gap: 15px; }
+        .search-stack { display: flex; flex-direction: column; gap: 12px; }
 
         .input-box {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
+            border-radius: 12px;
             transition: 0.3s;
         }
 
-        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 15px var(--glow); }
-
         input {
             width: 100%; background: transparent; border: none; color: white;
-            padding: 18px; outline: none; font-size: 1rem; text-align: center;
+            padding: 15px; outline: none; font-size: 0.95rem; text-align: center;
         }
 
         .action-btn {
             background: linear-gradient(135deg, var(--accent), #2272ff);
-            color: #000; border: none; padding: 18px; border-radius: 15px;
+            color: #000; border: none; padding: 15px; border-radius: 12px;
             font-weight: 800; cursor: pointer; transition: 0.4s;
-            text-transform: uppercase; letter-spacing: 1px;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;
         }
 
-        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px var(--glow); }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--glow); }
 
-        /* --- VIDEO PLAYER SECTION --- */
-        #result-area { display: none; margin-top: 30px; animation: slideUp 0.6s ease; }
+        /* --- COMPACT PLAYER SECTION --- */
+        #result-area { display: none; margin-top: 25px; animation: slideUp 0.5s ease; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .player-container {
-            width: 100%;
+        .player-wrapper {
+            width: 220px; /* FIXED WIDTH */
+            height: 220px; /* FIXED HEIGHT FOR COMPACT LOOK */
+            margin: 0 auto 20px auto;
             border-radius: 20px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px var(--glow);
             background: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
         }
 
-        video { width: 100%; display: block; aspect-ratio: 9/16; object-fit: cover; }
+        video { width: 100%; height: 100%; object-fit: cover; }
 
-        .meta-data { text-align: left; margin-bottom: 20px; }
-        .meta-data h4 { margin: 0; font-size: 1.1rem; color: #eee; line-height: 1.4; }
-        .meta-data p { color: var(--accent); margin: 5px 0 0; font-weight: 700; font-size: 0.9rem; }
+        .meta-data { text-align: center; margin-bottom: 20px; }
+        .meta-data h4 { margin: 0; font-size: 0.95rem; color: #eee; line-height: 1.4; font-weight: 600; }
+        .meta-data p { color: var(--accent); margin: 4px 0 0; font-weight: 700; font-size: 0.8rem; }
 
         /* --- DOWNLOAD BUTTONS --- */
-        .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .dl-btn {
-            text-decoration: none; padding: 16px; border-radius: 12px;
-            font-size: 0.85rem; font-weight: 800; display: flex; align-items: center;
-            justify-content: center; gap: 8px; transition: 0.3s;
+            text-decoration: none; padding: 14px; border-radius: 10px;
+            font-size: 0.8rem; font-weight: 800; display: flex; align-items: center;
+            justify-content: center; gap: 6px; transition: 0.3s;
         }
 
         .v-btn { background: var(--accent); color: #000; }
         .a-btn { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
 
-        .dl-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .dl-btn:hover { filter: brightness(1.2); }
 
-        #loading { display: none; margin: 20px 0; font-weight: 800; color: var(--accent); }
+        #loading { display: none; margin: 15px 0; font-weight: 800; color: var(--accent); font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -114,16 +114,16 @@
 
         <div class="search-stack">
             <div class="input-box">
-                <input type="text" id="tkUrl" placeholder="Paste TikTok Video Link...">
+                <input type="text" id="tkUrl" placeholder="Paste link here...">
             </div>
-            <button class="action-btn" onclick="getTikTok()">Get Video</button>
+            <button class="action-btn" onclick="getTikTok()">Fetch Details</button>
         </div>
 
-        <div id="loading">⚡ PROCESSING VIDEO...</div>
+        <div id="loading">✨ PROCESSING...</div>
 
         <div id="result-area">
-            <div class="player-container">
-                <video id="tkPlayer" controls poster="https://via.placeholder.com/450x800?text=Loading+Preview"></video>
+            <div class="player-wrapper">
+                <video id="tkPlayer" controls></video>
             </div>
             
             <div class="meta-data">
@@ -133,7 +133,7 @@
 
             <div class="dl-grid">
                 <a id="linkVideo" href="#" class="dl-btn v-btn" target="_blank">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> VIDEO
+                    <i class="fa-solid fa-video"></i> VIDEO
                 </a>
                 <a id="linkAudio" href="#" class="dl-btn a-btn" target="_blank">
                     <i class="fa-solid fa-music"></i> AUDIO
@@ -149,7 +149,7 @@
         const load = document.getElementById('loading');
         const res = document.getElementById('result-area');
 
-        if(!url) return alert("Please paste a URL first!");
+        if(!url) return;
 
         load.style.display = "block";
         res.style.display = "none";
@@ -161,27 +161,19 @@
 
             if(data.status) {
                 const videoData = data.result;
-                
-                // Set Player & Meta
-                const player = document.getElementById('tkPlayer');
-                player.src = videoData.video;
-                document.getElementById('vTitle').innerText = videoData.title;
-                document.getElementById('vAuthor').innerText = "Creator: " + videoData.author;
-                
-                // Set Download Links
+                document.getElementById('tkPlayer').src = videoData.video;
+                document.getElementById('vTitle').innerText = videoData.title.substring(0, 60) + "...";
+                document.getElementById('vAuthor').innerText = "@" + videoData.author;
                 document.getElementById('linkVideo').href = videoData.video;
                 document.getElementById('linkAudio').href = videoData.audio;
 
                 load.style.display = "none";
                 res.style.display = "block";
-                player.play(); // Auto-play after load
             } else {
-                alert("Invalid Link or API Error");
+                alert("Try another link");
                 load.style.display = "none";
             }
         } catch (err) {
-            console.error(err);
-            alert("Connection Failed");
             load.style.display = "none";
         }
     }
