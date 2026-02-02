@@ -8,10 +8,10 @@
     <style>
         :root {
             --accent: #ff2d55;
-            --accent-glow: rgba(255, 45, 85, 0.5);
+            --accent-glow: rgba(255, 45, 85, 0.6);
             --bg: #0a0a0c;
             --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,157 +27,132 @@
             overflow-x: hidden;
         }
 
-        /* Animated Mesh Gradient Background */
         .mesh {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: 
-                radial-gradient(at 0% 0%, rgba(255, 45, 85, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(255, 45, 85, 0.1) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(255, 45, 85, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 45, 85, 0.08) 0px, transparent 50%);
             z-index: -1;
         }
 
-        .container { width: 100%; max-width: 500px; padding: 20px; position: relative; }
+        .container { width: 100%; max-width: 480px; padding: 20px; }
 
         .app-card {
             background: var(--glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
             border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 40px 30px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            border-radius: 35px;
+            padding: 35px 25px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.7);
         }
 
-        /* Mode Selector */
+        /* Modern Tabs */
         .tabs {
             display: flex;
-            background: rgba(0,0,0,0.4);
-            padding: 6px;
-            border-radius: 20px;
-            margin-bottom: 30px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px;
+            border-radius: 18px;
+            margin-bottom: 25px;
             border: 1px solid var(--border);
         }
 
         .tab {
             flex: 1; padding: 12px; border: none; background: transparent;
-            color: #666; font-weight: 800; cursor: pointer;
-            border-radius: 15px; font-size: 0.75rem; letter-spacing: 1px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #777; font-weight: 800; cursor: pointer;
+            border-radius: 14px; font-size: 0.75rem; letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
         .tab.active {
             background: var(--accent);
             color: white;
-            box-shadow: 0 10px 20px var(--accent-glow);
-            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--accent-glow);
         }
 
-        /* Input Group with Floating Fetch */
-        .input-box {
-            position: relative;
-            background: rgba(0,0,0,0.5);
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            padding: 8px;
+        /* Attractive Input & Fetch Button */
+        .input-group {
             display: flex;
-            align-items: center;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 6px;
+            gap: 5px;
             transition: 0.3s;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        .input-box:focus-within {
-            border-color: var(--accent);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 0 20px rgba(255, 45, 85, 0.2);
-        }
+        .input-group:focus-within { border-color: var(--accent); }
 
         input {
             flex: 1; background: transparent; border: none;
-            color: white; padding: 15px; outline: none; font-size: 0.95rem;
+            color: white; padding: 0 15px; outline: none; font-size: 0.9rem;
         }
 
         #fetchBtn {
             background: var(--accent);
-            color: white;
-            border: none;
-            height: 48px;
-            padding: 0 25px;
-            border-radius: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 8px 15px var(--accent-glow);
+            color: white; border: none;
+            height: 45px; padding: 0 25px;
+            border-radius: 15px; font-weight: 800;
+            cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; font-size: 0.75rem;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
         #fetchBtn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 25px var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px var(--accent);
         }
-
-        #fetchBtn:active { transform: scale(0.95); }
 
         /* Loader */
         .loader {
             display: none;
-            width: 40px; height: 4px;
-            background: rgba(255,255,255,0.1);
-            margin: 30px auto;
+            width: 100%; height: 3px;
+            background: rgba(255,255,255,0.05);
+            margin: 25px 0; border-radius: 10px;
             position: relative; overflow: hidden;
-            border-radius: 10px;
         }
 
         .loader::after {
-            content: '';
-            position: absolute; width: 40%; height: 100%;
-            background: var(--accent);
-            animation: loading 1.5s infinite ease-in-out;
+            content: ''; position: absolute; width: 40%; height: 100%;
+            background: var(--accent); animation: move 1.2s infinite ease-in-out;
         }
 
-        @keyframes loading {
-            0% { left: -40%; }
-            100% { left: 100%; }
-        }
+        @keyframes move { 0% { left: -40%; } 100% { left: 100%; } }
 
-        /* Content Display */
-        #resultArea { display: none; margin-top: 35px; animation: fadeIn 0.8s ease; }
+        /* Results Display */
+        #resultArea { display: none; margin-top: 30px; animation: scaleIn 0.5s ease; }
 
-        @keyframes fadeIn { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .thumbnail {
-            width: 100%; border-radius: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            width: 100%; border-radius: 20px;
+            margin-bottom: 15px; border: 1px solid var(--border);
         }
 
-        .title { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; line-height: 1.3; color: #fff; }
+        .title { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; line-height: 1.4; color: #fff; text-align: left;}
 
-        .meta-tags { display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tag { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 10px; font-size: 0.7rem; color: #aaa; font-weight: 600; }
+        /* Download Buttons Grid */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
 
-        /* Quality Buttons */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-
-        .dl-link {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+        .dl-btn {
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border);
-            color: white;
-            padding: 18px;
-            border-radius: 20px;
-            text-decoration: none;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            transition: 0.3s;
+            color: white; padding: 15px;
+            border-radius: 18px; text-decoration: none;
+            text-align: center; font-weight: 700;
+            transition: 0.3s; font-size: 0.85rem;
         }
 
-        .dl-link:hover {
-            border-color: var(--accent);
+        .dl-btn:hover {
             background: var(--accent);
-            box-shadow: 0 10px 20px var(--accent-glow);
+            border-color: var(--accent);
             transform: translateY(-3px);
+            box-shadow: 0 10px 20px var(--accent-glow);
         }
 
-        .dl-link span { display: block; font-size: 0.6rem; opacity: 0.6; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+        .dl-btn span { display: block; font-size: 0.6rem; opacity: 0.6; margin-top: 3px; }
 
     </style>
 </head>
@@ -188,93 +163,98 @@
     <div class="container">
         <div class="app-card">
             <div class="tabs">
-                <button class="tab active" onclick="setMode('mp4', this)">VIDEO</button>
-                <button class="tab" onclick="setMode('mp3', this)">AUDIO</button>
+                <button class="tab active" id="modeVideo" onclick="switchMode('mp4')">VIDEO MP4</button>
+                <button class="tab" id="modeAudio" onclick="switchMode('mp3')">AUDIO MP3</button>
             </div>
 
-            <div class="input-box">
-                <input type="text" id="urlInput" placeholder="Paste link here...">
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="Paste link here..." spellcheck="false">
                 <button id="fetchBtn">Fetch</button>
             </div>
 
             <div class="loader" id="loader"></div>
 
             <div id="resultArea">
-                <img id="vidThumb" class="thumbnail" src="" alt="">
-                <h2 class="title" id="vidTitle">Video Title</h2>
+                <img id="vidThumb" class="thumbnail" src="">
+                <h2 class="title" id="vidTitle">Loading...</h2>
                 
-                <div class="meta-tags">
-                    <span class="tag" id="tagAuthor">Author</span>
-                    <span class="tag" id="tagTime">00:00</span>
-                    <span class="tag" id="tagViews">0 Views</span>
-                </div>
-
-                <p style="font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 12px; letter-spacing: 2px;">SELECT QUALITY</p>
-                <div class="grid" id="qualityGrid"></div>
+                <p style="font-size: 0.6rem; color: var(--accent); font-weight: 800; letter-spacing: 2px; margin-top: 20px;">CHOOSE QUALITY</p>
+                <div class="grid" id="qualityGrid">
+                    </div>
             </div>
         </div>
-        
-        <p style="text-align: center; margin-top: 30px; font-size: 0.6rem; color: #444; font-weight: 700; letter-spacing: 1px;">POWERED BY VAJIRA APIS</p>
     </div>
 
     <script>
-        let mode = 'mp4';
-        const apiKey = "vajira-1qg3lqmr60-1768268975394";
+        let currentMode = 'mp4'; // Default
+        const API_KEY = "vajira-1qg3lqmr60-1768268975394";
 
-        function setMode(m, btn) {
-            mode = m;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
+        function switchMode(m) {
+            currentMode = m;
+            document.getElementById('modeVideo').classList.toggle('active', m === 'mp4');
+            document.getElementById('modeAudio').classList.toggle('active', m === 'mp3');
+            // Clear current results if mode is changed to avoid confusion
+            document.getElementById('resultArea').style.display = 'none';
         }
 
         document.getElementById('fetchBtn').addEventListener('click', async () => {
             const url = document.getElementById('urlInput').value.trim();
-            if (!url) return;
+            if (!url) return alert("Please paste a link!");
 
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('resultArea');
             const qualityGrid = document.getElementById('qualityGrid');
             const fetchBtn = document.getElementById('fetchBtn');
 
+            // Reset UI for new request
             loader.style.display = "block";
             resultArea.style.display = "none";
-            fetchBtn.innerText = "Processing...";
+            qualityGrid.innerHTML = ""; // This clears old buttons
             fetchBtn.disabled = true;
 
             try {
-                const apiPath = mode === 'mp4' ? 'ytmp4' : 'ytmp3';
-                const response = await fetch(`https://vajira-official-apis.vercel.app/api/${apiPath}?apikey=${apiKey}&url=${url}`);
+                // Select API based on the mode selected by user
+                const apiPath = currentMode === 'mp4' ? 'ytmp4' : 'ytmp3';
+                const apiUrl = `https://vajira-official-apis.vercel.app/api/${apiPath}?apikey=${API_KEY}&url=${url}`;
+                
+                const response = await fetch(apiUrl);
                 const res = await response.json();
 
                 if (res.status) {
+                    // Extract video info (Handling both metadata and data labels)
                     const data = res.metadata || res.data;
-                    const links = res.downloads.video || res.downloads;
-
-                    document.getElementById('vidThumb').src = data.thumbnails.max || data.thumbnails.high || data.thumbnails.image || data.thumbnails.default;
+                    
+                    // Update Metadata UI
+                    document.getElementById('vidThumb').src = data.thumbnails.image || data.thumbnails.default || data.thumbnails.max;
                     document.getElementById('vidTitle').innerText = data.title;
-                    document.getElementById('tagAuthor').innerText = data.author.name;
-                    document.getElementById('tagTime').innerText = data.timestamp || data.duration.timestamp;
-                    document.getElementById('tagViews').innerText = (data.viewsFormatted || data.views) + " Views";
 
-                    qualityGrid.innerHTML = "";
+                    // Extract download links based on API format
+                    // MP4 API uses res.downloads.video | MP3 API uses res.downloads
+                    const links = currentMode === 'mp4' ? res.downloads.video : res.downloads;
+
                     links.forEach(item => {
-                        const qualityLabel = item.quality || item.bitrate;
                         const dl = document.createElement('a');
                         dl.href = item.url;
-                        dl.className = 'dl-link';
+                        dl.className = 'dl-btn';
                         dl.target = '_blank';
-                        dl.innerHTML = `${qualityLabel} <span>DOWNLOAD ${item.format}</span>`;
+                        
+                        // Quality name (mp4 uses .quality, mp3 uses .bitrate)
+                        const label = item.quality || item.bitrate;
+                        dl.innerHTML = `${label} <span>DOWNLOAD ${item.format.toUpperCase()}</span>`;
+                        
                         qualityGrid.appendChild(dl);
                     });
 
                     loader.style.display = "none";
                     resultArea.style.display = "block";
+                } else {
+                    alert("Error: Link not supported or API down.");
                 }
-            } catch (e) {
-                alert("Error fetching data.");
+            } catch (error) {
+                console.error(error);
+                alert("Connection failed.");
             } finally {
                 loader.style.display = "none";
-                fetchBtn.innerText = "Fetch";
                 fetchBtn.disabled = false;
             }
         });
