@@ -28,18 +28,18 @@
         #detailView { display: none; }
         .movie-main { display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
         .poster-detail { width: 100%; border-radius: 15px; border: 1px solid #333; }
-        .description { color: #aaa; line-height: 1.6; margin: 20px 0; }
+        .description { color: #aaa; line-height: 1.6; margin: 20px 0; max-height: 250px; overflow-y: auto; }
         .gallery-wrapper { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin: 30px 0; }
         .gallery-wrapper img { height: 140px; border-radius: 10px; cursor: pointer; border: 1px solid #333; }
 
         .download-card { background: #111; border-radius: 20px; padding: 25px; border: 1px solid #222; }
-        .dl-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; background: #1a1a1a; border-radius: 10px; border: 1px solid #333; }
-        .dl-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .dl-row { display: flex; justify-content: space-between; align-items: center; padding: 18px; margin-bottom: 12px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
+        .dl-btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; }
 
         @media (max-width: 800px) {
             .movie-main { grid-template-columns: 1fr; }
             .movie-grid { grid-template-columns: repeat(2, 1fr); }
-            .poster-detail { max-width: 240px; margin: 0 auto; display: block; }
+            .poster-detail { max-width: 250px; margin: 0 auto; display: block; }
         }
     </style>
 </head>
@@ -54,7 +54,7 @@
 
 <div class="container">
     <div id="searchView">
-        <div class="section-title">Discovery</div>
+        <div class="section-title">Latest Releases</div>
         <div class="movie-grid" id="movieGrid"></div>
     </div>
 
@@ -92,36 +92,47 @@
         try {
             const resp = await fetch(url);
             const result = await resp.json();
-            const data = result.data.data;
-            const movie = data.mainDetails;
-            const extra = data.moviedata;
-            const links = data.dllinks.directDownloadLinks;
+            const movie = result.data.data.mainDetails;
+            const extra = result.data.data.moviedata;
+            const links = result.data.data.dllinks.directDownloadLinks;
 
             document.getElementById('detailContent').innerHTML = `
                 <div class="movie-main">
                     <img src="${movie.imageUrl}" class="poster-detail">
                     <div class="info">
-                        <h1 style="margin:0;">${movie.maintitle}</h1>
+                        <h1 style="margin:0; font-size:2.5rem;">${movie.maintitle}</h1>
+                        <div style="margin:10px 0; color:var(--primary); font-weight:800;">IMDb ${extra.imdbRating} • ${movie.dateCreated}</div>
                         <p class="description">${extra.description}</p>
                         <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #222; padding-top:15px;">
-                            <div><b>Director:</b> ${extra.director}</div>
-                            <div><b>Country:</b> ${movie.country}</div>
+                            <div><b>Director:</b><br>${extra.director}</div>
+                            <div><b>Country:</b><br>${movie.country}</div>
                         </div>
                     </div>
                 </div>
                 <div class="gallery-wrapper">${extra.imageUrls.map(u => `<img src="${u}">`).join('')}</div>
+                
+                <div class="section-title">Movie Cast</div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin-bottom:40px;">
+                    ${extra.cast.slice(0, 6).map(c => `
+                        <div style="background:#1a1a1a; padding:10px; border-radius:8px; border:1px solid #333;">
+                            <div style="font-weight:800; font-size:0.8rem;">${c.name}</div>
+                            <div style="font-size:0.7rem; color:#666;">${c.character}</div>
+                        </div>
+                    `).join('')}
+                </div>
+
                 <div class="download-card">
-                    <div style="margin-bottom:15px; font-weight:800; color:var(--primary);">AVAILABLE LINKS</div>
+                    <div style="margin-bottom:15px; font-weight:800; color:var(--primary);">DOWNLOAD OPTIONS</div>
                     ${links.map(l => `
                         <div class="dl-row">
-                            <div><b>${l.quality}</b><br><small>${l.size}</small></div>
-                            <button class="dl-btn" onclick="handleDownload('${l.link}')">DOWNLOAD</button>
+                            <div><b>${l.quality}</b><br><small style="color:#666">${l.size}</small></div>
+                            <button class="dl-btn" onclick="handleDownload('${l.link}')">GET FILE</button>
                         </div>
                     `).join('')}
                 </div>
             `;
             showView('detail');
-        } catch (e) { console.error("Detail error"); }
+        } catch (e) { console.error("Detail load error"); }
     }
 
     async function handleDownload(linkUrl) {
@@ -129,13 +140,13 @@
         try {
             const resp = await fetch(url);
             const result = await resp.json();
-            let link = result.data.data.link;
-            if (link) {
-                // Change api/file/ to u/ and jump
-                const final = link.replace('api/file/', 'u/').split('?')[0];
-                window.location.replace(final);
+            let finalLink = result.data.data.link;
+            if (finalLink) {
+                // SUDDEN REDIRECT: swap api/file/ for u/
+                const userViewLink = finalLink.replace('api/file/', 'u/').split('?')[0];
+                window.location.replace(userViewLink);
             }
-        } catch (e) { console.error("Download error"); }
+        } catch (e) { console.error("Download fail"); }
     }
 
     function showView(view) {
