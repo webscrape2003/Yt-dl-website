@@ -3,97 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vajira Movie Detailer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Vajira Movie Detailer Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff1e2a; --bg: #050505; --card: #121212; --text: #ffffff; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; }
+        :root { --primary: #ff1e2a; --bg: #080808; --card: #151515; --text: #ffffff; --accent: #38bdf8; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
 
-        /* URL Input Header */
+        /* Modern Input Header */
         .url-header {
-            padding: 30px 20px;
-            background: #111;
+            padding: 25px 20px;
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid #222;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: sticky; top: 0; z-index: 1000;
         }
         .input-group {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            gap: 10px;
-            background: #000;
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid #333;
+            max-width: 900px; margin: 0 auto;
+            display: flex; gap: 10px; background: #000;
+            padding: 6px; border-radius: 14px; border: 1px solid #333;
         }
         #urlInput {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 10px;
-            outline: none;
+            flex: 1; background: transparent; border: none;
+            color: white; padding: 12px 15px; outline: none; font-size: 0.95rem;
         }
         #fetchBtn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
+            background: var(--primary); color: white; border: none;
+            padding: 0 25px; border-radius: 10px; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
         }
+        #fetchBtn:hover { background: #d4141d; transform: scale(1.02); }
 
-        .container { max-width: 1100px; margin: 40px auto; padding: 20px; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
 
-        /* Image Slider */
-        .slider-container {
-            width: 100%;
-            height: 400px;
-            overflow: hidden;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            position: relative;
-            background: #111;
-        }
-        .slider-track {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            height: 100%;
-        }
-        .slider-track img {
-            min-width: 100%;
-            object-fit: cover;
-        }
-
-        /* Movie Info Layout */
-        .movie-grid { display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
-        .main-poster { width: 100%; border-radius: 15px; border: 1px solid #333; }
-        .imdb-badge { background: #f5c518; color: #000; padding: 4px 10px; border-radius: 5px; font-weight: 800; }
-        .description { color: #ccc; font-size: 1.1rem; margin: 20px 0; }
+        /* Main Info Section */
+        .movie-main { display: grid; grid-template-columns: 320px 1fr; gap: 40px; margin-bottom: 50px; }
+        .poster { width: 100%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid #333; }
         
-        /* Download Table */
-        .download-box {
-            background: var(--card);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 1px solid #222;
-        }
-        .dl-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            border-bottom: 1px solid #222;
-        }
-        .dl-item:last-child { border: none; }
-        .dl-btn { background: var(--primary); color: white; text-decoration: none; padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; }
+        .badge-row { display: flex; gap: 12px; align-items: center; margin: 15px 0; }
+        .imdb-badge { background: #f5c518; color: #000; padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 0.9rem; }
+        .meta-tag { color: #888; font-size: 0.9rem; font-weight: 600; }
+        
+        .description { color: #bbb; font-size: 1.1rem; line-height: 1.7; margin: 25px 0; }
 
-        @media (max-width: 768px) {
-            .movie-grid { grid-template-columns: 1fr; }
-            .slider-container { height: 250px; }
+        /* BEAUTIFUL SCREENSHOT GALLERY */
+        .screenshot-section { margin: 40px 0; }
+        .section-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); font-weight: 800; margin-bottom: 15px; display: block; }
+        
+        .gallery-wrapper {
+            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;
+            scrollbar-width: thin; scrollbar-color: var(--primary) #222;
+        }
+        .gallery-wrapper::-webkit-scrollbar { height: 6px; }
+        .gallery-wrapper::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        
+        .gallery-wrapper img {
+            height: 180px; border-radius: 12px; object-fit: cover;
+            border: 1px solid #333; transition: 0.3s; cursor: pointer;
+        }
+        .gallery-wrapper img:hover { transform: scale(1.05); border-color: var(--primary); }
+
+        /* DOWNLOAD BOX */
+        .download-card {
+            background: var(--card); border-radius: 20px; padding: 30px;
+            border: 1px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .dl-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 0; border-bottom: 1px solid #252525;
+        }
+        .dl-row:last-child { border: none; }
+        .dl-info b { font-size: 1.1rem; color: var(--text); }
+        .dl-info span { color: #666; font-size: 0.9rem; margin-left: 10px; }
+        
+        .dl-action-btn {
+            background: #222; color: #fff; text-decoration: none;
+            padding: 10px 24px; border-radius: 8px; font-weight: 700;
+            font-size: 0.85rem; transition: 0.3s; border: 1px solid #333;
+        }
+        .dl-action-btn:hover { background: var(--primary); border-color: var(--primary); }
+
+        @media (max-width: 850px) {
+            .movie-main { grid-template-columns: 1fr; }
+            .poster { max-width: 280px; margin: 0 auto; display: block; }
+            .gallery-wrapper img { height: 140px; }
         }
     </style>
 </head>
@@ -101,25 +93,25 @@
 
 <div class="url-header">
     <div class="input-group">
-        <input type="text" id="urlInput" placeholder="Paste movie URL here..." value="https://sinhalasub.lk/movies/the-rajasaab-2026-sinhala-subtitles/">
-        <button id="fetchBtn" onclick="fetchMovieDetails()">Get Details</button>
+        <input type="text" id="urlInput" placeholder="Paste movie link here..." value="https://sinhalasub.lk/movies/the-rajasaab-2026-sinhala-subtitles/">
+        <button id="fetchBtn" onclick="fetchMovieDetails()">GET DETAILS</button>
     </div>
 </div>
 
-<div class="container" id="content-area">
-    </div>
+<div class="container" id="mainDisplay">
+    <div style="text-align:center; padding:100px; color:#555">Enter a URL to load movie details.</div>
+</div>
 
 <script>
     const apikey = "vajiraofficial";
     const proxy = "https://api.allorigins.win/get?url=";
-    let slideIndex = 0;
 
     async function fetchMovieDetails() {
         const movieUrl = document.getElementById('urlInput').value.trim();
-        if (!movieUrl) return alert("Please enter a URL");
+        if (!movieUrl) return;
 
-        const display = document.getElementById('content-area');
-        display.innerHTML = '<div style="text-align:center; padding:50px;">Fetching all details...</div>';
+        const container = document.getElementById('mainDisplay');
+        container.innerHTML = '<div style="text-align:center; padding:100px;">Loading beautiful details...</div>';
 
         const apiUrl = `https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/movie?url=${encodeURIComponent(movieUrl)}&apikey=${apikey}`;
 
@@ -130,67 +122,60 @@
             const movie = data.mainDetails;
             const links = data.dllinks.DownloadLinks;
 
-            display.innerHTML = `
-                <div class="slider-container">
-                    <div class="slider-track" id="sliderTrack">
-                        ${movie.imgUrls.map(url => `<img src="${url.trim()}" onerror="this.style.display='none'">`).join('')}
+            container.innerHTML = `
+                <div class="movie-main">
+                    <img src="${movie.imageUrl}" class="poster">
+                    <div class="info">
+                        <h1 style="font-size:2.5rem; margin:0;">${movie.maintitle}</h1>
+                        <div class="badge-row">
+                            <span class="imdb-badge">${movie.imdbRating}</span>
+                            <span class="meta-tag">${movie.dateCreated}</span>
+                            <span class="meta-tag">•</span>
+                            <span class="meta-tag">${movie.country}</span>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            ${movie.genres.map(g => `<span style="background:rgba(255,255,255,0.05); border:1px solid #333; padding:4px 14px; border-radius:30px; font-size:0.75rem; font-weight:700;">${g}</span>`).join('')}
+                        </div>
+                        <p class="description">${movie.description}</p>
+                        
+                        <div style="font-size:0.9rem; border-top:1px solid #222; padding-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div><b style="color:var(--primary)">Director:</b> <br>${movie.director}</div>
+                            <div><b style="color:var(--primary)">Subtitles By:</b> <br>${movie.subtitlesBy}</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="movie-grid">
-                    <div>
-                        <img src="${movie.imageUrl}" class="main-poster">
-                        <div style="margin-top:20px; font-size:0.9rem; color:#888">
-                            <b>Director:</b> ${movie.director}<br>
-                            <b>Subtitles:</b> ${movie.subtitlesBy}<br>
-                            <b>Runtime:</b> ${movie.runtime}
-                        </div>
+                <div class="screenshot-section">
+                    <span class="section-label">Screenshots & Stills</span>
+                    <div class="gallery-wrapper">
+                        ${movie.imgUrls.map(url => `<img src="${url.trim()}" onclick="window.open(this.src)">`).join('')}
                     </div>
-                    <div>
-                        <h1 style="margin-top:0">${movie.maintitle}</h1>
-                        <div style="margin-bottom:15px;">
-                            <span class="imdb-badge">${movie.imdbRating}</span>
-                            <span style="margin-left:15px; color:#aaa">${movie.dateCreated} • ${movie.country}</span>
-                        </div>
-                        <div style="display:flex; gap:10px; margin-bottom:20px;">
-                            ${movie.genres.map(g => `<span style="background:#222; padding:3px 12px; border-radius:20px; font-size:0.8rem">${g}</span>`).join('')}
-                        </div>
-                        <p class="description">${movie.description}</p>
+                </div>
 
-                        <div class="download-box">
-                            <h3 style="margin-top:0">Download Options</h3>
-                            ${links.map(l => `
-                                <div class="dl-item">
-                                    <div><b>${l.quality}</b> <span style="color:#666; margin-left:10px;">${l.size}</span></div>
-                                    <a href="${l.link}" target="_blank" class="dl-btn">Download</a>
-                                </div>
-                            `).join('')}
+                <div class="download-card">
+                    <span class="section-label" style="margin-bottom:20px;">Available Downloads</span>
+                    ${links.map(l => `
+                        <div class="dl-row">
+                            <div class="dl-info">
+                                <b>${l.quality}</b>
+                                <span>${l.size} • ${l.type}</span>
+                            </div>
+                            <a href="${l.link}" target="_blank" class="dl-action-btn">DOWNLOAD</a>
                         </div>
-                    </div>
+                    `).join('')}
+                </div>
+                
+                <div style="padding: 50px 0; text-align:center; opacity:0.3; font-size:0.8rem;">
+                    Powered by VajiraTech API
                 </div>
             `;
 
-            startSlider();
-
         } catch (e) {
-            display.innerHTML = '<div style="color:red; text-align:center;">Failed to fetch. Ensure the URL is correct.</div>';
+            container.innerHTML = '<div style="text-align:center; color:var(--primary); padding:100px;">Error: Could not fetch data. Check URL or API Key.</div>';
         }
     }
 
-    function startSlider() {
-        const track = document.getElementById('sliderTrack');
-        const images = track.getElementsByTagName('img');
-        if (images.length <= 1) return;
-        
-        slideIndex = 0;
-        setInterval(() => {
-            slideIndex++;
-            if (slideIndex >= images.length) slideIndex = 0;
-            track.style.transform = `translateX(-${slideIndex * 100}%)`;
-        }, 3000);
-    }
-
-    // Auto load first one
+    // Auto-fetch the initial URL
     fetchMovieDetails();
 </script>
 
