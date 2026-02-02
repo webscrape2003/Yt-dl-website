@@ -84,7 +84,7 @@
 
 <div class="url-header">
     <div class="input-group">
-        <input type="text" id="urlInput" placeholder="Paste movie link here..." value="https://sinhalasub.lk/movies/the-rajasaab-2026-sinhala-subtitles/">
+        <input type="text" id="urlInput" placeholder="Paste movie link here...">
         <button id="fetchBtn" onclick="fetchMovieDetails()">GET DETAILS</button>
     </div>
 </div>
@@ -95,7 +95,7 @@
 
 <script>
     const apikey = "vajiraofficial";
-    const proxy = "https://api.allorigins.win/get?url=";
+ //   const proxy = "https://api.allorigins.win/get?url=";
 
     async function fetchMovieDetails() {
         const movieUrl = document.getElementById('urlInput').value.trim();
@@ -107,7 +107,7 @@
         const apiUrl = `https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/movie?url=${encodeURIComponent(movieUrl)}&apikey=${apikey}`;
 
         try {
-            const resp = await fetch(proxy + encodeURIComponent(apiUrl));
+            const resp = await fetch(encodeURIComponent(apiUrl));
             const json = JSON.parse((await resp.json()).contents);
             const data = json.data.data;
             const movie = data.mainDetails;
