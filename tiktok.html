@@ -3,200 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VajiraOfficial | TikTok Downloader</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Vajira Movie Box - Ultra Fast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #020205;
-            --tt-grad: linear-gradient(135deg, #00f2ea 0%, #ff0050 100%);
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-        }
+        :root { --primary: #ff1e2a; --bg: #0a0a0a; --card: #121212; --text: #ffffff; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .header { padding: 20px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .search-box { max-width: 600px; margin: 0 auto; display: flex; gap: 10px; background: #1a1a1a; padding: 5px; border-radius: 12px; border: 1px solid #333; }
+        input { flex: 1; background: transparent; border: none; color: white; padding: 12px; outline: none; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
+        .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 25px; color: #fff; border-left: 5px solid var(--primary); padding-left: 15px; }
+
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+        .movie-card { background: var(--card); border-radius: 12px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; position: relative; display: flex; flex-direction: column; height: 100%; }
+        .movie-card:hover { transform: translateY(-8px); border-color: var(--primary); }
+        
+        .badge-container { position: absolute; top: 10px; left: 10px; display: flex; flex-wrap: wrap; gap: 5px; z-index: 10; }
+        .badge { font-size: 0.65rem; font-weight: 800; padding: 3px 7px; border-radius: 4px; text-transform: uppercase; color: white; }
+        .badge.year { background: #3b82f6; }
+        .badge.rating { background: #f59e0b; color: #000; }
 
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
+        .image-container { position: relative; width: 100%; padding-top: 145%; background: #1a1a1a; }
+        .movie-card img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        
+        .card-info { padding: 15px; background: linear-gradient(to top, #000 85%, transparent); margin-top: -70px; position: relative; flex-grow: 1; display: flex; align-items: flex-end; }
+        .card-title { font-size: 0.85rem; font-weight: 600; line-height: 1.3; color: #fff; text-align: center; width: 100%; text-shadow: 2px 2px 4px #000; }
 
-        .header-box i {
-            font-size: 3rem;
-            background: var(--tt-grad);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
+        #loader { display: none; text-align: center; padding: 40px; color: var(--primary); font-weight: 800; letter-spacing: 2px; }
 
-        h2 { font-weight: 800; margin-bottom: 25px; letter-spacing: -1px; }
-
-        input {
-            width: 100%;
-            padding: 16px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: rgba(0,0,0,0.3);
-            color: white;
-            margin-bottom: 15px;
-            text-align: center;
-            outline: none;
-        }
-
-        #fetchBtn {
-            width: 100%;
-            padding: 16px;
-            border-radius: 20px;
-            border: none;
-            background: var(--tt-grad);
-            color: white;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 10px 20px rgba(255, 0, 80, 0.2);
-            transition: 0.3s;
-        }
-
-        #fetchBtn:hover { transform: scale(1.02); filter: brightness(1.1); }
-
-        #resultArea {
-            display: none;
-            margin-top: 30px;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .info-card {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 25px;
-            margin-bottom: 20px;
-        }
-
-        .video-title { font-size: 0.9rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; color: #eee; }
-        .author-name { font-size: 0.75rem; color: #00f2ea; font-weight: 800; text-transform: uppercase; }
-
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-        .dl-btn {
-            padding: 15px;
-            border-radius: 15px;
-            text-decoration: none;
-            color: white;
-            font-weight: 800;
-            font-size: 0.8rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            transition: 0.3s;
-        }
-
-        .vid-dl { background: #ff0050; }
-        .aud-dl { background: #00f2ea; color: #000; }
-
-        .dl-btn span { font-size: 0.6rem; opacity: 0.8; }
-        .dl-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-
-        #loader { display: none; margin: 20px 0; color: #00f2ea; font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; }
-
-        footer { margin-top: 30px; font-weight: 800; font-size: 0.7rem; color: #333; letter-spacing: 3px; }
-        footer span { color: #ff0050; }
+        @media (max-width: 600px) { .movie-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-box">
-            <i class="fa-brands fa-tiktok"></i>
-            <h2>TikTok<span>Fetch</span></h2>
-        </div>
-
-        <input type="text" id="ttUrl" placeholder="Paste TikTok Video Link...">
-        <button id="fetchBtn">Get Download Links</button>
-
-        <div id="loader">EXTRACTING DATA...</div>
-
-        <div id="resultArea">
-            <div class="info-card">
-                <div class="video-title" id="title"></div>
-                <div class="author-name" id="author"></div>
-            </div>
-
-            <div class="btn-group">
-                <a href="#" id="vidLink" class="dl-btn vid-dl" target="_blank">
-                    <i class="fa-solid fa-video"></i>
-                    VIDEO
-                    <span>No Watermark</span>
-                </a>
-                <a href="#" id="audLink" class="dl-btn aud-dl" target="_blank">
-                    <i class="fa-solid fa-music"></i>
-                    AUDIO
-                    <span>MP3 Quality</span>
-                </a>
-            </div>
-        </div>
+<div class="header">
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search Movie or Year (e.g. 2023)...">
+        <button id="searchBtn" onclick="searchMovies()">SEARCH</button>
     </div>
+</div>
 
-    <footer>VajiraOfficial <span>TTDL</span></footer>
+<div class="container">
+    <div class="section-title" id="statusText">Latest Movies</div>
+    <div id="loader">FETCHING MOVIES...</div>
+    <div class="movie-grid" id="movieGrid"></div>
+</div>
 
-    <script>
-        const API_KEY = "vajira-1qg3lqmr60-1768268975394";
+<script>
+    const API_KEY = "vajiraofficial";
 
-        document.getElementById('fetchBtn').addEventListener('click', async () => {
-            const url = document.getElementById('ttUrl').value.trim();
-            if(!url) return alert("Please enter a TikTok URL!");
+    // Allow "Enter" key to search
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchMovies();
+    });
 
-            const loader = document.getElementById('loader');
-            const resultArea = document.getElementById('resultArea');
-            const btn = document.getElementById('fetchBtn');
+    async function searchMovies() {
+        const query = document.getElementById('searchInput').value.trim();
+        const grid = document.getElementById('movieGrid');
+        const status = document.getElementById('statusText');
+        const loader = document.getElementById('loader');
+        const btn = document.getElementById('searchBtn');
 
-            loader.style.display = "block";
-            resultArea.style.display = "none";
-            btn.disabled = true;
+        if (!query) return;
 
-            try {
-                const response = await fetch(`https://vajira-official-apis.vercel.app/api/ttdl?apikey=${API_KEY}&url=${url}`);
-                const data = await response.json();
+        // Start Loading (Direct Method)
+        grid.innerHTML = '';
+        loader.style.display = 'block';
+        btn.disabled = true;
+        status.innerText = `Searching: ${query}`;
 
-                if(data.status) {
-                    document.getElementById('title').innerText = data.result.title;
-                    document.getElementById('author').innerText = "@" + data.result.author;
-                    document.getElementById('vidLink').href = data.result.video;
-                    document.getElementById('audLink').href = data.result.audio;
+        try {
+            // Direct fetch without Proxy for high speed
+            const response = await fetch(`https://vajira-mv-apikeys.netlify.app/api/pirate/search?q=${encodeURIComponent(query)}&apikey=${API_KEY}`);
+            const data = await response.json();
 
-                    loader.style.display = "none";
-                    resultArea.style.display = "block";
-                } else {
-                    alert("Error: Link invalid or API limit reached.");
-                }
-            } catch (error) {
-                alert("Connection failed. Try again.");
-            } finally {
-                loader.style.display = "none";
-                btn.disabled = false;
+            // Correct path based on your API structure: data.data.data.data
+            const moviesArray = data?.data?.data?.data || [];
+
+            if (moviesArray.length > 0) {
+                let html = '';
+                moviesArray.forEach(movie => {
+                    const poster = movie.imageSrc || 'https://via.placeholder.com/300x450?text=No+Poster';
+                    html += `
+                        <div class="movie-card" onclick="window.open('${movie.link}', '_blank')">
+                            <div class="badge-container">
+                                <span class="badge year">${movie.year || 'N/A'}</span>
+                                ${movie.rating ? `<span class="badge rating">${movie.rating}</span>` : ''}
+                            </div>
+                            <div class="image-container">
+                                <img src="${poster}" alt="poster" loading="lazy">
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">${movie.title}</div>
+                            </div>
+                        </div>`;
+                });
+                grid.innerHTML = html;
+                status.innerText = `Found ${moviesArray.length} results for "${query}"`;
+            } else {
+                status.innerText = "No movies found";
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 50px;">No results. Try another keyword.</p>';
             }
-        });
-    </script>
+
+        } catch (error) {
+            console.error("API Error:", error);
+            status.innerText = "Error fetching data";
+            alert("Connection failed. Please check your API key or network.");
+        } finally {
+            loader.style.display = "none";
+            btn.disabled = false;
+        }
+    }
+
+    // Load 2023 on start
+    window.onload = () => {
+        document.getElementById('searchInput').value = '2023';
+        searchMovies();
+    };
+</script>
+
 </body>
 </html>
