@@ -48,7 +48,6 @@
         
         .gallery-wrapper {
             display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;
-            scrollbar-width: thin; scrollbar-color: var(--primary) #222;
         }
         .gallery-wrapper img {
             height: 180px; border-radius: 12px; object-fit: cover;
@@ -64,8 +63,6 @@
             padding: 18px 0; border-bottom: 1px solid #252525;
         }
         .dl-row:last-child { border: none; }
-        .dl-info b { font-size: 1.1rem; color: var(--text); }
-        .dl-info span { color: #666; font-size: 0.9rem; margin-left: 10px; }
         
         .dl-action-btn {
             background: #222; color: #fff; border: 1px solid #333;
@@ -95,7 +92,7 @@
 
 <script>
     const apikey = "vajiraofficial";
- //   const proxy = "https://api.allorigins.win/get?url=";
+    const proxy = "https://api.allorigins.win/get?url=";
 
     async function fetchMovieDetails() {
         const movieUrl = document.getElementById('urlInput').value.trim();
@@ -107,9 +104,12 @@
         const apiUrl = `https://vajira-mv-apikeys.netlify.app/api/sinhalasubs/movie?url=${encodeURIComponent(movieUrl)}&apikey=${apikey}`;
 
         try {
-            const resp = await fetch(encodeURIComponent(apiUrl));
-            const json = JSON.parse((await resp.json()).contents);
-            const data = json.data.data;
+            // Re-added the proxy for CORS handling
+            const resp = await fetch(proxy + encodeURIComponent(apiUrl));
+            const jsonWrapper = await resp.json();
+            const result = JSON.parse(jsonWrapper.contents); // Parse the actual data from proxy
+            
+            const data = result.data.data;
             const movie = data.mainDetails;
             const links = data.dllinks.DownloadLinks;
 
@@ -148,8 +148,8 @@
                     ${links.map(l => `
                         <div class="dl-row">
                             <div class="dl-info">
-                                <b>${l.quality}</b>
-                                <span>${l.size} • ${l.type}</span>
+                                <b>${l.quality}</b><br>
+                                <span style="color:#666; font-size:0.9rem;">${l.size} • ${l.type}</span>
                             </div>
                             <button onclick="handleDownload('${l.link}', this)" class="dl-action-btn">DOWNLOAD</button>
                         </div>
@@ -162,11 +162,11 @@
             `;
 
         } catch (e) {
-            container.innerHTML = '<div style="text-align:center; color:var(--primary); padding:100px;">Error: Could not fetch data.</div>';
+            console.error(e);
+            container.innerHTML = '<div style="text-align:center; color:var(--primary); padding:100px;">Error: Could not fetch data. Check URL.</div>';
         }
     }
 
-    // Fixed Download Function
     async function handleDownload(linkUrl, btn) {
         const originalText = btn.innerText;
         btn.innerText = "WAIT...";
@@ -192,8 +192,6 @@
             btn.disabled = false;
         }
     }
-
-    fetchMovieDetails();
 </script>
 </body>
 </html>
