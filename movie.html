@@ -165,42 +165,31 @@
     }
 
     async function handleDownload(linkUrl, btn) {
-    const originalText = btn.innerText;
-    btn.innerText = "WAIT...";
-    btn.disabled = true;
+        const originalText = btn.innerText;
+        btn.innerText = "BYPASSING...";
+        btn.disabled = true;
 
-    // Construct the direct download link resolver API
-    const downloadApi = `https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(linkUrl)}&apikey=${apikey}`;
+        const downloadApi = `https://vajira-mv-apikeys.netlify.app/api/pirate/download?url=${encodeURIComponent(linkUrl)}&apikey=${apikey}`;
 
-    try {
-        const resp = await fetch(proxy + encodeURIComponent(downloadApi));
-        const jsonWrapper = await resp.json();
-        const result = JSON.parse(jsonWrapper.contents);
-        
-        let finalVideoLink = result.data.data.link;
+        try {
+            const resp = await fetch(proxy + encodeURIComponent(downloadApi));
+            const jsonWrapper = await resp.json();
+            const result = JSON.parse(jsonWrapper.contents);
+            const finalLink = result.data.data.link;
 
-        if (finalVideoLink) {
-            // Clean up the link if it's a Pixeldrain API link to make it a web view link
-            finalVideoLink = finalVideoLink
-                .replace('api/file/', 'u/')
-                .replace(/[?&]download/, '');
-
-            // REDIRECT IN THE SAME TAB
-            window.location.href = finalVideoLink; 
-        } else {
-            alert("Download link not found.");
+            if (finalLink) {
+                // Open the link in a new tab
+                window.open(finalLink, '_blank');
+            } else {
+                alert("Could not resolve final link.");
+            }
+        } catch (e) {
+            alert("Error generating download.");
+        } finally {
             btn.innerText = originalText;
             btn.disabled = false;
         }
-    } catch (e) {
-        alert("Error generating download link.");
-        btn.innerText = originalText;
-        btn.disabled = false;
     }
-}
-
-
-
 </script>
 </body>
 </html>
