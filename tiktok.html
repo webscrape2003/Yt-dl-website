@@ -3,121 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader | VajiraOfficial</title>
+    <title>Vajira | Pro TikTok Downloader</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { 
-            --primary: #2af5ff; 
-            --secondary: #2272ff;
-            --bg: #030405; 
-            --card: #121212; 
+            --accent: #2af5ff; 
+            --glow: rgba(42, 245, 255, 0.4);
+            --bg: #050505; 
+            --card-bg: rgba(18, 18, 18, 0.8); 
         }
         
-        body { background-color: var(--bg); color: white; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 20px; }
-
-        .container { max-width: 500px; margin: 40px auto; text-align: center; }
-
-        /* --- SEARCH BOX --- */
-        .search-area { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
-        
-        .input-wrapper {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 5px;
+        body { 
+            background: radial-gradient(circle at top right, #1a1a1a, #000);
+            color: white; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            min-height: 100vh;
             display: flex;
+            justify-content: center;
+            padding: 20px;
         }
+
+        .main-wrapper { width: 100%; max-width: 450px; }
+
+        /* --- GLASS SEARCH SECTION --- */
+        .glass-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+
+        .logo h2 { font-weight: 800; font-size: 2rem; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .logo span { color: var(--accent); text-shadow: 0 0 20px var(--glow); }
+
+        .search-stack { display: flex; flex-direction: column; gap: 15px; }
+
+        .input-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 15px var(--glow); }
 
         input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 15px;
-            outline: none;
-            font-size: 1rem;
+            width: 100%; background: transparent; border: none; color: white;
+            padding: 18px; outline: none; font-size: 1rem; text-align: center;
         }
 
-        .search-btn {
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent), #2272ff);
+            color: #000; border: none; padding: 18px; border-radius: 15px;
+            font-weight: 800; cursor: pointer; transition: 0.4s;
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .search-btn:hover { filter: brightness(1.2); transform: scale(1.05); }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px var(--glow); }
 
-        /* --- RESULT CARD (Hidden by default) --- */
-        #result-container { display: none; }
+        /* --- VIDEO PLAYER SECTION --- */
+        #result-area { display: none; margin-top: 30px; animation: slideUp 0.6s ease; }
 
-        .result-card {
-            background: var(--card);
-            border-radius: 25px;
-            padding: 20px;
-            border: 1px solid #222;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            animation: fadeIn 0.5s ease;
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        .player-container {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        video { width: 100%; display: block; aspect-ratio: 9/16; object-fit: cover; }
 
-        video { width: 100%; border-radius: 15px; background: #000; margin-bottom: 15px; }
+        .meta-data { text-align: left; margin-bottom: 20px; }
+        .meta-data h4 { margin: 0; font-size: 1.1rem; color: #eee; line-height: 1.4; }
+        .meta-data p { color: var(--accent); margin: 5px 0 0; font-weight: 700; font-size: 0.9rem; }
 
-        .info h3 { font-size: 1rem; margin: 10px 0; line-height: 1.4; color: #fff; }
-        .info p { color: var(--primary); font-size: 0.9rem; margin-bottom: 20px; }
-
-        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        /* --- DOWNLOAD BUTTONS --- */
+        .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .dl-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: white;
-            font-weight: 800;
-            font-size: 0.9rem;
-            transition: 0.3s;
+            text-decoration: none; padding: 16px; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 800; display: flex; align-items: center;
+            justify-content: center; gap: 8px; transition: 0.3s;
         }
 
-        .video-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .audio-btn { background: #222; border: 1px solid #444; }
+        .v-btn { background: var(--accent); color: #000; }
+        .a-btn { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
 
-        #loader { display: none; color: var(--primary); font-weight: 800; margin-bottom: 20px; }
+        .dl-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+        #loading { display: none; margin: 20px 0; font-weight: 800; color: var(--accent); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="search-area">
-        <div class="input-wrapper">
-            <input type="text" id="tiktokUrl" placeholder="Paste TikTok Link Here...">
+<div class="main-wrapper">
+    <div class="glass-box">
+        <div class="logo">
+            <h2>Vajira<span>TIKTOK</span></h2>
         </div>
-        <button class="search-btn" onclick="downloadTikTok()">FETCH DETAILS</button>
-    </div>
 
-    <div id="loader">⚡ SEARCHING...</div>
-
-    <div id="result-container">
-        <div class="result-card">
-            <video id="v-player" controls></video>
-            <div class="info">
-                <h3 id="v-title"></h3>
-                <p id="v-author"></p>
+        <div class="search-stack">
+            <div class="input-box">
+                <input type="text" id="tkUrl" placeholder="Paste TikTok Video Link...">
             </div>
-            <div class="btn-group">
-                <a id="dl-video" href="#" class="dl-btn video-btn" target="_blank">
-                    <i class="fa-solid fa-video"></i> Download Video
+            <button class="action-btn" onclick="getTikTok()">Get Video</button>
+        </div>
+
+        <div id="loading">⚡ PROCESSING VIDEO...</div>
+
+        <div id="result-area">
+            <div class="player-container">
+                <video id="tkPlayer" controls poster="https://via.placeholder.com/450x800?text=Loading+Preview"></video>
+            </div>
+            
+            <div class="meta-data">
+                <h4 id="vTitle"></h4>
+                <p id="vAuthor"></p>
+            </div>
+
+            <div class="dl-grid">
+                <a id="linkVideo" href="#" class="dl-btn v-btn" target="_blank">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> VIDEO
                 </a>
-                <a id="dl-audio" href="#" class="dl-btn audio-btn" target="_blank">
-                    <i class="fa-solid fa-music"></i> Download MP3
+                <a id="linkAudio" href="#" class="dl-btn a-btn" target="_blank">
+                    <i class="fa-solid fa-music"></i> AUDIO
                 </a>
             </div>
         </div>
@@ -125,41 +144,45 @@
 </div>
 
 <script>
-    async function downloadTikTok() {
-        const url = document.getElementById('tiktokUrl').value.trim();
-        const loader = document.getElementById('loader');
-        const resultBox = document.getElementById('result-container');
+    async function getTikTok() {
+        const url = document.getElementById('tkUrl').value.trim();
+        const load = document.getElementById('loading');
+        const res = document.getElementById('result-area');
 
-        if (!url) { alert("Please paste a link!"); return; }
+        if(!url) return alert("Please paste a URL first!");
 
-        loader.style.display = "block";
-        resultBox.style.display = "none";
+        load.style.display = "block";
+        res.style.display = "none";
 
         try {
             const api = `https://vajira-official-apis.vercel.app/api/ttdl?apikey=vajira-1qg3lqmr60-1768268975394&url=${encodeURIComponent(url)}`;
             const response = await fetch(api);
             const data = await response.json();
 
-            if (data.status) {
-                const res = data.result;
+            if(data.status) {
+                const videoData = data.result;
                 
-                // Update UI
-                document.getElementById('v-player').src = res.video;
-                document.getElementById('v-title').innerText = res.title;
-                document.getElementById('v-author').innerHTML = `<i class="fa-solid fa-user"></i> ${res.author}`;
-                document.getElementById('dl-video').href = res.video;
-                document.getElementById('dl-audio').href = res.audio;
+                // Set Player & Meta
+                const player = document.getElementById('tkPlayer');
+                player.src = videoData.video;
+                document.getElementById('vTitle').innerText = videoData.title;
+                document.getElementById('vAuthor').innerText = "Creator: " + videoData.author;
+                
+                // Set Download Links
+                document.getElementById('linkVideo').href = videoData.video;
+                document.getElementById('linkAudio').href = videoData.audio;
 
-                loader.style.display = "none";
-                resultBox.style.display = "block";
+                load.style.display = "none";
+                res.style.display = "block";
+                player.play(); // Auto-play after load
             } else {
-                alert("Error fetching video. Check link.");
-                loader.style.display = "none";
+                alert("Invalid Link or API Error");
+                load.style.display = "none";
             }
-        } catch (error) {
-            console.error(error);
-            alert("API Error");
-            loader.style.display = "none";
+        } catch (err) {
+            console.error(err);
+            alert("Connection Failed");
+            load.style.display = "none";
         }
     }
 </script>
