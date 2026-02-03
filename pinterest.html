@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vajira | Pinterest Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --accent: #E60023; /* Pinterest Red */
+            --accent-glow: rgba(230, 0, 35, 0.4);
+            --bg: #0d0e12;
+            --card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #1a1a1a, #000);
+            color: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        .app-container {
+            width: 100%; max-width: 440px;
+            background: var(--card); backdrop-filter: blur(25px);
+            border: 1px solid var(--border); border-radius: 35px;
+            padding: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        .logo { text-align: center; margin-bottom: 25px; }
+        .logo h2 { font-weight: 800; font-size: 1.6rem; letter-spacing: -1px; }
+
+        .input-section { margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
+        input {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 16px; border-radius: 18px; color: white; text-align: center; outline: none;
+        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+        .fetch-btn {
+            width: 100%; background: var(--accent); color: white; border: none;
+            padding: 16px; border-radius: 18px; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .fetch-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
+
+        /* --- MEDIA PLAYER / PREVIEW --- */
+        #resultArea { display: none; animation: slideUp 0.6s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .player-frame {
+            width: 100%; aspect-ratio: 9/16; max-height: 480px; background: #000;
+            border-radius: 25px; overflow: hidden; border: 2px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow); margin: 0 auto 20px;
+        }
+        video, #imgPreview { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        .title { font-size: 0.95rem; font-weight: 700; margin-bottom: 20px; line-height: 1.4; color: #fff; text-align: center; }
+
+        /* --- DOWNLOAD OPTIONS --- */
+        .dl-stack { display: flex; flex-direction: column; gap: 10px; }
+        .dl-card {
+            background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 18px;
+            text-decoration: none; color: white; border: 1px solid var(--border);
+            transition: 0.3s; display: flex; justify-content: space-between; align-items: center;
+        }
+        .dl-card:hover { border-color: var(--accent); background: rgba(230, 0, 35, 0.1); transform: translateX(5px); }
+        .dl-card .info b { font-size: 0.9rem; display: block; }
+        .dl-card .info span { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+        .dl-card i { font-size: 1.2rem; color: var(--accent); }
+
+        #loader { display: none; color: var(--accent); font-weight: 800; text-align: center; margin: 15px 0; }
+
+        footer { text-align: center; margin-top: 25px; font-size: 0.8rem; font-weight: 700; color: #64748b; }
+        footer span { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="logo">
+            <h2>Vajira<span>PINTEREST</span></h2>
+        </div>
+        
+        <div class="input-section">
+            <input type="text" id="pinUrl" placeholder="Paste Pinterest Link...">
+            <button class="fetch-btn" onclick="fetchPin()">GET MEDIA</button>
+        </div>
+
+        <div id="loader">🎨 RENDERING PIN...</div>
+
+        <div id="resultArea">
+            <div class="player-frame">
+                <video id="pinPlayer" controls></video>
+                <img id="imgPreview" src="" alt="Pinterest Image">
+            </div>
+            
+            <div id="vTitle" class="title"></div>
+
+            <div id="dlStack" class="dl-stack">
+                </div>
+        </div>
+    </div>
+
+    <footer>
+        Powered by: Vajira <span>Rathnayaka</span>
+    </footer>
+
+    <script>
+        const API_KEY = "vajira-1qg3lqmr60-1768268975394";
+
+        async function fetchPin() {
+            const url = document.getElementById('pinUrl').value.trim();
+            const loader = document.getElementById('loader');
+            const resArea = document.getElementById('resultArea');
+            const dlStack = document.getElementById('dlStack');
+            const video = document.getElementById('pinPlayer');
+            const image = document.getElementById('imgPreview');
+
+            if(!url) return;
+
+            loader.style.display = "block";
+            resArea.style.display = "none";
+            dlStack.innerHTML = "";
+            video.style.display = "none";
+            image.style.display = "none";
+
+            try {
+                const api = `https://vajira-official-apis.vercel.app/api/pinterest?apikey=${API_KEY}&url=${encodeURIComponent(url)}`;
+                const response = await fetch(api);
+                const data = await response.json();
+
+                if(data.status === 200) {
+                    const pin = data.data;
+                    document.getElementById('vTitle').innerText = pin.title;
+
+                    // Filter downloads
+                    const videoLink = pin.downloads.find(d => d.format === "MP4");
+                    
+                    if (videoLink) {
+                        video.src = videoLink.url;
+                        video.style.display = "block";
+                    } else {
+                        image.src = pin.thumbnail;
+                        image.style.display = "block";
+                    }
+
+                    // Build Download Buttons
+                    pin.downloads.forEach(dl => {
+                        const card = document.createElement('a');
+                        card.href = dl.url;
+                        card.className = 'dl-card';
+                        card.target = '_blank';
+                        card.innerHTML = `
+                            <div class="info">
+                                <b>${dl.quality}</b>
+                                <span>Format: ${dl.format}</span>
+                            </div>
+                            <i class="fa-solid fa-circle-arrow-down"></i>
+                        `;
+                        dlStack.appendChild(card);
+                    });
+
+                    loader.style.display = "none";
+                    resArea.style.display = "block";
+                }
+            } catch (err) {
+                loader.style.display = "none";
+                alert("Could not load Pin.");
+            }
+        }
+    </script>
+</body>
+</html>
