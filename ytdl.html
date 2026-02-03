@@ -3,120 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vajira | YouTube Pro Player</title>
+    <title>StreamFetch | VajiraOfficial Ytdl</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --accent: #ff2d55;
             --accent-glow: rgba(255, 45, 85, 0.4);
-            --bg: #050505;
-            --card: rgba(20, 20, 20, 0.8);
+            --bg: #0d0e12;
+            --card: rgba(255, 255, 255, 0.04);
             --border: rgba(255, 255, 255, 0.1);
+            --text-dim: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at top right, #1a1a1a, #000);
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #1a1a1a, #000);
             color: white;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
         .app-container {
-            width: 100%; max-width: 440px;
-            background: var(--card); backdrop-filter: blur(25px);
-            border: 1px solid var(--border); border-radius: 35px;
-            padding: 30px; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
-            text-align: center;
-        }
-
-        .logo h2 { font-weight: 800; font-size: 1.8rem; margin-bottom: 25px; letter-spacing: -1.5px; }
-        .logo span { color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
-
-        /* --- VERTICAL SEARCH LAYOUT --- */
-        .search-stack { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .input-box { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 15px; }
-        input { width: 100%; background: transparent; border: none; color: white; padding: 16px; outline: none; text-align: center; font-size: 0.95rem; }
-
-        #fetchBtn {
-            background: linear-gradient(135deg, var(--accent), #ff5e3a);
-            color: white; border: none; padding: 16px; border-radius: 15px;
-            font-weight: 800; text-transform: uppercase; cursor: pointer;
-            transition: 0.4s; letter-spacing: 1px;
-        }
-        #fetchBtn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px var(--accent-glow); }
-
-        /* --- BEAUTIFUL PLAYER DESIGN --- */
-        #resultArea { display: none; animation: slideUp 0.6s ease; margin-top: 20px; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .player-frame {
-            position: relative;
-            width: 100%; aspect-ratio: 16/9;
-            background: #000; border-radius: 20px;
-            overflow: hidden; border: 2px solid var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
             margin-bottom: 20px;
         }
-        video { width: 100%; height: 100%; object-fit: contain; }
 
-        .title { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; line-height: 1.4; text-align: left; }
-        .author { color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; display: block; text-align: left; }
+        .logo-area { text-align: center; margin-bottom: 25px; }
+        .logo-area h2 { font-weight: 800; font-size: 1.6rem; letter-spacing: -1px; }
 
-        /* --- TOGGLE BUTTONS --- */
-        .toggle-group { display: flex; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 5px; margin-bottom: 15px; }
-        .sel-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; background: transparent; color: white; font-weight: 700; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
+        .input-section { margin-bottom: 25px; display: flex; flex-direction: column; gap: 12px; }
+        
+        input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 18px;
+            color: white;
+            text-align: center;
+            outline: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+        #fetchBtn {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 45, 85, 0.3);
+            transition: 0.3s;
+        }
+        #fetchBtn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* --- BEAUTIFUL PLAYER --- */
+        #resultArea { display: none; animation: slideUp 0.6s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .player-frame {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            margin-bottom: 15px;
+        }
+        video { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+        .title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; text-align: left; }
+        
+        .stats { 
+            display: flex; gap: 8px; font-size: 0.7rem; color: var(--text-dim); 
+            margin-bottom: 20px; flex-wrap: wrap; 
+        }
+        .stats span { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 8px; font-weight: 600; border: 1px solid var(--border); }
+
+        .format-selection { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 15px; }
+        
+        .sel-btn {
+            flex: 1; padding: 12px; border-radius: 12px; border: none;
+            background: transparent; color: white; font-weight: 700;
+            cursor: pointer; transition: 0.3s; font-size: 0.8rem;
+        }
         .sel-btn.active { background: var(--accent); box-shadow: 0 5px 15px var(--accent-glow); }
 
-        /* --- DOWNLOAD LIST --- */
         .dl-list { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
         .dl-list.active { display: grid; }
+
         .dl-item {
-            background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;
-            text-decoration: none; color: white; text-align: center; font-size: 0.8rem;
+            background: rgba(255,255,255,0.07); padding: 15px; border-radius: 18px;
+            text-decoration: none; color: white; text-align: center; font-size: 0.85rem;
             font-weight: 700; border: 1px solid var(--border); transition: 0.2s;
         }
-        .dl-item:hover { border-color: var(--accent); background: rgba(255, 45, 85, 0.1); transform: scale(1.02); }
+        .dl-item:hover { border-color: var(--accent); background: rgba(255, 45, 85, 0.15); transform: scale(1.02); }
+        .dl-item span { display: block; font-size: 0.65rem; opacity: 0.6; margin-top: 4px; text-transform: uppercase; }
 
-        #loader { display: none; color: var(--accent); font-weight: 800; margin: 15px 0; font-size: 0.9rem; }
+        #loader { display: none; color: var(--accent); font-weight: 800; margin: 15px 0; text-align: center; letter-spacing: 1px; }
+
+        footer { text-align: center; padding: 10px; font-size: 0.8rem; font-weight: 700; color: var(--text-dim); letter-spacing: 1px; }
+        footer span { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div class="logo">
-            <h2>Vajira<span>CINEMA</span></h2>
+        <div class="logo-area">
+            <h2>VajiraOfficial <span style="color:var(--accent)">Ytdl</span></h2>
         </div>
         
-        <div class="search-stack">
-            <div class="input-box">
-                <input type="text" id="urlInput" placeholder="Paste YouTube Link...">
-            </div>
-            <button id="fetchBtn">Stream & Download</button>
+        <div class="input-section">
+            <input type="text" id="urlInput" placeholder="YouTube URL or Song Name...">
+            <button id="fetchBtn">FETCH CONTENT</button>
         </div>
 
-        <div id="loader">✨ BOOTING PLAYER...</div>
+        <div id="loader">⚡ BOOTING PLAYER...</div>
 
         <div id="resultArea">
             <div class="player-frame">
                 <video id="vidPlayer" controls></video>
             </div>
-            
-            <div id="vidTitle" class="title"></div>
-            <span id="vidAuthor" class="author"></span>
 
-            <div class="toggle-group">
-                <button class="sel-btn active" id="btnVid" onclick="toggleDisplay('video')">MP4 VIDEO</button>
-                <button class="sel-btn" id="btnAud" onclick="toggleDisplay('audio')">MP3 AUDIO</button>
+            <div id="vidTitle" class="title"></div>
+            
+            <div class="stats">
+                <span id="vidAuthor"></span>
+                <span id="vidViews"></span>
+                <span id="vidAgo"></span>
+                <span id="vidTime"></span>
+            </div>
+
+            <div class="format-selection">
+                <button class="sel-btn active" id="btnVid" onclick="toggleDisplay('video')">VIDEO (MP4)</button>
+                <button class="sel-btn" id="btnAud" onclick="toggleDisplay('audio')">AUDIO (MP3)</button>
             </div>
 
             <div id="videoList" class="dl-list active"></div>
             <div id="audioList" class="dl-list"></div>
         </div>
     </div>
+
+    <footer>
+        Powered by: Vajira <span>Rathnayaka</span>
+    </footer>
 
     <script>
         const API_KEY = "vajira-1qg3lqmr60-1768268975394";
@@ -130,7 +182,7 @@
 
         document.getElementById('fetchBtn').addEventListener('click', async () => {
             const url = document.getElementById('urlInput').value.trim();
-            if(!url) return;
+            if(!url) return alert("Please paste a link first!");
 
             const loader = document.getElementById('loader');
             const resultArea = document.getElementById('resultArea');
@@ -143,33 +195,44 @@
                     fetch(`https://vajira-official-apis.vercel.app/api/ytmp3?apikey=${API_KEY}&url=${encodeURIComponent(url)}`).then(r => r.json())
                 ]);
 
-                if (vRes.status) {
+                if (vRes.status && aRes.status) {
                     const meta = vRes.metadata;
                     
-                    // Setup Video Player
+                    // Set Player Video Source (Highest quality link)
                     const player = document.getElementById('vidPlayer');
-                    player.src = vRes.downloads.video[0].url; // Loads highest quality for preview
-                    player.poster = meta.thumbnails.high || meta.thumbnails.image;
-                    
-                    document.getElementById('vidTitle').innerText = meta.title;
-                    document.getElementById('vidAuthor').innerText = "Channel: " + meta.author.name;
+                    player.src = vRes.downloads.video[0].url;
+                    player.poster = meta.thumbnails.max || meta.thumbnails.image;
 
-                    // Build Download Buttons
-                    const vList = document.getElementById('videoList'); vList.innerHTML = "";
+                    // Display Header Meta (Keeping all original info)
+                    document.getElementById('vidTitle').innerText = meta.title;
+                    document.getElementById('vidAuthor').innerText = meta.author.name;
+                    document.getElementById('vidViews').innerText = meta.viewsFormatted + " views";
+                    document.getElementById('vidAgo').innerText = meta.ago;
+                    document.getElementById('vidTime').innerText = meta.duration.timestamp;
+
+                    // Build Video Buttons (All qualities)
+                    const vList = document.getElementById('videoList');
+                    vList.innerHTML = "";
                     vRes.downloads.video.forEach(dl => {
                         vList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.quality}<span>${dl.format}</span></a>`;
                     });
 
-                    const aList = document.getElementById('audioList'); aList.innerHTML = "";
+                    // Build Audio Buttons
+                    const aList = document.getElementById('audioList');
+                    aList.innerHTML = "";
                     aRes.data.downloads.forEach(dl => {
                         aList.innerHTML += `<a href="${dl.url}" class="dl-item" target="_blank">${dl.bitrate}<span>${dl.format}</span></a>`;
                     });
 
                     loader.style.display = "none";
                     resultArea.style.display = "block";
+                } else {
+                    alert("Error: Link invalid or API failed.");
                 }
             } catch (err) {
-                alert("API Connection Failed");
+                console.error(err);
+                alert("Connection Failed.");
+            } finally {
                 loader.style.display = "none";
             }
         });
