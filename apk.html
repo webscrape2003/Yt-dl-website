@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vajira | App Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --accent: #ff6000; /* Aptoide Orange */
+            --accent-glow: rgba(255, 96, 0, 0.4);
+            --bg: #0d0e12;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top left, #1a1a1a, #000);
+            color: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        .app-container {
+            width: 100%; max-width: 420px;
+            background: var(--card); backdrop-filter: blur(25px);
+            border: 1px solid var(--border); border-radius: 35px;
+            padding: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+
+        .logo h2 { font-weight: 800; font-size: 1.8rem; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .logo span { color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
+
+        .search-stack { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .input-box { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 18px; transition: 0.3s; }
+        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        input { width: 100%; background: transparent; border: none; color: white; padding: 18px; outline: none; text-align: center; font-size: 1rem; }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--accent), #ff9100);
+            color: white; border: none; padding: 16px; border-radius: 18px;
+            font-weight: 800; text-transform: uppercase; cursor: pointer;
+            transition: 0.4s; letter-spacing: 1px;
+        }
+        .search-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px var(--accent-glow); }
+
+        /* --- APP RESULT AREA --- */
+        #resultArea { display: none; animation: slideUp 0.6s ease; margin-top: 10px; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .app-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 25px; padding: 25px; margin-bottom: 20px;
+        }
+
+        .app-icon {
+            width: 100px; height: 100px; border-radius: 22px;
+            margin: 0 auto 15px; border: 2px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow); object-fit: cover;
+        }
+
+        .app-name { font-size: 1.3rem; font-weight: 800; margin-bottom: 5px; }
+        .app-tag { color: var(--accent); font-size: 0.8rem; font-weight: 700; margin-bottom: 20px; display: block; }
+
+        .download-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; background: #fff; color: #000;
+            padding: 18px; border-radius: 15px; font-weight: 800;
+            transition: 0.3s; font-size: 0.95rem;
+        }
+        .download-btn:hover { background: var(--accent); color: #fff; transform: scale(1.02); }
+
+        #loader { display: none; color: var(--accent); font-weight: 800; margin: 15px 0; }
+
+        footer { text-align: center; margin-top: 25px; font-size: 0.8rem; font-weight: 700; color: #64748b; }
+        footer span { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="logo">
+            <h2>Vajira<span>STORE</span></h2>
+        </div>
+        
+        <div class="search-stack">
+            <div class="input-box">
+                <input type="text" id="queryInput" placeholder="Enter App Name (e.g. Free Fire)">
+            </div>
+            <button class="search-btn" onclick="fetchApp()">Search APK</button>
+        </div>
+
+        <div id="loader">🚀 SEARCHING APP...</div>
+
+        <div id="resultArea">
+            <div class="app-card">
+                <img id="appIcon" class="app-icon" src="" alt="icon">
+                <div id="appName" class="app-name"></div>
+                <span class="app-tag">Verified Safe APK</span>
+                
+                <a id="dlLink" href="#" class="download-btn" target="_blank">
+                    <i class="fa-solid fa-download"></i> DOWNLOAD APK
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            Powered by: Vajira <span>Rathnayaka</span>
+        </footer>
+    </div>
+
+    <script>
+        const API_KEY = "vajira-1qg3lqmr60-1768268975394";
+
+        async function fetchApp() {
+            const query = document.getElementById('queryInput').value.trim();
+            const loader = document.getElementById('loader');
+            const resArea = document.getElementById('resultArea');
+
+            if(!query) return;
+
+            loader.style.display = "block";
+            resArea.style.display = "none";
+
+            try {
+                const api = `https://vajira-official-apis.vercel.app/api/aptoide?apikey=${API_KEY}&q=${encodeURIComponent(query)}`;
+                const response = await fetch(api);
+                const data = await response.json();
+
+                if(data.status) {
+                    document.getElementById('appIcon').src = data.icon;
+                    document.getElementById('appName').innerText = data.name;
+                    document.getElementById('dlLink').href = data.download_url;
+
+                    loader.style.display = "none";
+                    resArea.style.display = "block";
+                } else {
+                    alert("App not found!");
+                    loader.style.display = "none";
+                }
+            } catch (err) {
+                console.error(err);
+                loader.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
