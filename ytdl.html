@@ -78,6 +78,87 @@
         }
         #fetchBtn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
+
+
+
+/* --- BANK PAYMENT SECTION --- */
+.bank-card {
+    margin-top: 25px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px dashed var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bank-card::before {
+    content: 'PREMIUM SUPPORT';
+    position: absolute;
+    top: 10px;
+    right: -20px;
+    background: var(--accent);
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 2px 30px;
+    transform: rotate(45deg);
+}
+
+.bank-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.bank-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.detail-label { color: var(--text-dim); }
+.detail-value { color: #fff; font-weight: 600; }
+
+.acc-number-box {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.acc-number-box:hover {
+    border-color: var(--accent);
+    background: rgba(255, 45, 85, 0.05);
+}
+
+#copyStatus {
+    font-size: 0.7rem;
+    color: var(--accent);
+    display: none;
+    margin-top: 5px;
+    text-align: center;
+}
+
+
+
+
+        
         /* --- BEAUTIFUL PLAYER --- */
         #resultArea { display: none; animation: slideUp 0.6s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -166,11 +247,60 @@
         </div>
     </div>
 
+
+<div class="bank-card">
+    <div class="bank-header">
+        <i class="fa-solid fa-building-columns"></i> SUPPORT THE CREATOR
+    </div>
+    <div class="bank-details">
+        <div class="detail-row">
+            <span class="detail-label">Bank</span>
+            <span class="detail-value">Bank of Ceylon</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Branch</span>
+            <span class="detail-value">Balangoda (688)</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Holder</span>
+            <span class="detail-value">MR W M V RATHNAYAKA</span>
+        </div>
+        
+        <div class="acc-number-box" onclick="copyAccountNumber()">
+            <div>
+                <span class="detail-label" style="display:block; font-size:0.6rem;">ACCOUNT NUMBER</span>
+                <span id="accNum" style="letter-spacing: 1px; font-weight: 800;">0089860809</span>
+            </div>
+            <i class="fa-regular fa-copy" style="color:var(--accent)"></i>
+        </div>
+        <div id="copyStatus">Copied to clipboard!</div>
+    </div>
+</div>
+
+
+    
     <footer>
         Powered by: Vajira <span>Rathnayaka</span>
     </footer>
 
     <script>
+
+
+
+function copyAccountNumber() {
+    const accNum = document.getElementById('accNum').innerText;
+    navigator.clipboard.writeText(accNum).then(() => {
+        const status = document.getElementById('copyStatus');
+        status.style.display = 'block';
+        setTimeout(() => {
+            status.style.display = 'none';
+        }, 2000);
+    });
+}
+
+
+
+        
         const API_KEY = "vajira-1qg3lqmr60-1768268975394";
 
         function toggleDisplay(type) {
