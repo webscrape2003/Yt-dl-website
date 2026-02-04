@@ -294,11 +294,23 @@
 
         <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
             <div style="font-size: 0.65rem; color: var(--accent); font-weight: 700; letter-spacing: 0.5px;">FREE API ENDPOINTS:</div>
-            <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 10px; font-size: 0.6rem; border: 1px solid rgba(255,255,255,0.05); overflow-x: auto; white-space: nowrap; color: var(--text-dim);">
-                https://vajira-official-apis.vercel.app/api/ytmp3?apikey=YOUR_KEY&url=
+            
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 10px; border: 1px solid var(--border);">
+                <div style="flex: 1; overflow-x: auto; white-space: nowrap; font-size: 0.65rem; color: #94a3b8; padding: 5px 0;" class="custom-scrollbar">
+                    <span id="urlMp3">https://vajira-official-apis.vercel.app/api/ytmp3?apikey=YOUR_KEY&url=</span>
+                </div>
+                <button onclick="copyText('urlMp3')" style="background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 5px;">
+                    <i class="fa-regular fa-copy" style="font-size: 0.7rem;"></i>
+                </button>
             </div>
-            <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 10px; font-size: 0.6rem; border: 1px solid rgba(255,255,255,0.05); overflow-x: auto; white-space: nowrap; color: var(--text-dim);">
-                https://vajira-official-apis.vercel.app/api/ytmp4?apikey=YOUR_KEY&url=
+
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 10px; border: 1px solid var(--border);">
+                <div style="flex: 1; overflow-x: auto; white-space: nowrap; font-size: 0.65rem; color: #94a3b8; padding: 5px 0;" class="custom-scrollbar">
+                    <span id="urlMp4">https://vajira-official-apis.vercel.app/api/ytmp4?apikey=YOUR_KEY&url=</span>
+                </div>
+                <button onclick="copyText('urlMp4')" style="background: transparent; border: none; color: var(--accent); cursor: pointer; padding: 5px;">
+                    <i class="fa-regular fa-copy" style="font-size: 0.7rem;"></i>
+                </button>
             </div>
         </div>
 
@@ -340,6 +352,13 @@
     </div>
 </div>
 
+<style>
+    /* Add this to hide the scrollbar but keep it swipable */
+    .custom-scrollbar::-webkit-scrollbar { height: 2px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+</style>
+
+
 
 
 
@@ -350,13 +369,19 @@
 
     <script>
 
-function copyAccountNumber() {
-    const accNum = document.getElementById('accNum').innerText;
-    navigator.clipboard.writeText(accNum).then(() => {
+
+
+
+        
+function copyText(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
         const status = document.getElementById('copyStatus');
-        status.style.display = 'block';
-        setTimeout(() => {
-            status.style.display = 'none';
+        status.innerText = "✅ URL Copied!";
+        status.style.display = "block";
+        setTimeout(() => { 
+            status.style.display = "none"; 
+            status.innerText = "✅ Copied to clipboard!"; 
         }, 2000);
     });
 }
