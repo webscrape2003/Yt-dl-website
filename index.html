@@ -401,13 +401,19 @@
         <span><i class="fas fa-share-nodes"></i> SOCIAL_HUB</span>
     </div>
     
-    <div class="menu-item" onclick="toggleSubMenu()">
-        <span><i class="fas fa-gears"></i> API_INTERFACE</span>
+
+<div class="menu-item" onclick="toggleSubMenu()">
+        <span><i class="fas fa-gears"></i> VAJIRA_API_HUB</span>
         <i class="fas fa-chevron-down arrow" id="api-arrow"></i>
     </div>
+        <div class="submenu-container" id="api-submenu">
+            <div class="sub-item" onclick="switchView('official-api')">> OFFICIAL_API</div>
+            <div class="sub-item" onclick="switchView('movie-api')">> MOVIE_API</div>
+        </div>
 
-    <div class="menu-item" onclick="switchView('ai-hub')">
-        <span><i class="fas fa-brain"></i> NEURAL_HUB</span>
+    
+<div class="menu-item" onclick="switchView('ai-hub')">
+        <span><i class="fas fa-brain"></i> VAJIRA_AI_HUB</span>
     </div>
 
     <div class="menu-item" onclick="switchView('flexa')">
