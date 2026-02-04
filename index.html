@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vajira | Tech Hub</title>
+    <title>Vajira | Tech Hub OS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +11,7 @@
             --cyan: #00f2ff;
             --pink: #ff00c8;
             --bg: #02040a;
-            --glass: rgba(10, 15, 30, 0.85);
+            --glass: rgba(10, 15, 30, 0.8);
             --border: rgba(0, 242, 255, 0.2);
             --sidebar-width: 280px;
         }
@@ -29,7 +29,70 @@
             overflow-x: hidden;
         }
 
-        /* --- TECH LOADING ANIMATION --- */
+        /* --- SIDEBAR NAVIGATION --- */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: calc(-1 * var(--sidebar-width));
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg);
+            border-right: 1px solid var(--cyan);
+            z-index: 9999;
+            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            padding: 40px 20px;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+        }
+
+        #sidebar.open { left: 0; }
+
+        .menu-header {
+            font-family: 'JetBrains Mono';
+            color: var(--pink);
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item {
+            font-family: 'JetBrains Mono';
+            padding: 15px 10px;
+            margin-bottom: 10px;
+            border-left: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            border-left: 2px solid var(--cyan);
+            background: rgba(0, 242, 255, 0.05);
+            color: var(--cyan);
+            padding-left: 20px;
+        }
+
+        #menu-trigger {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 900;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            color: var(--cyan);
+            font-family: 'JetBrains Mono';
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- LOADER --- */
         #loader {
             position: fixed;
             inset: 0;
@@ -40,7 +103,6 @@
             justify-content: center;
             align-items: center;
             font-family: 'JetBrains Mono', monospace;
-            transition: opacity 0.8s;
         }
 
         .scanner {
@@ -65,252 +127,232 @@
             50% { transform: translateY(50px); opacity: 1; }
         }
 
-        /* --- SIDEBAR NAVIGATION & SUB-MENU --- */
-        .menu-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            font-size: 1.2rem;
-            color: var(--cyan);
-            background: var(--glass);
-            border: 1px solid var(--cyan);
-            cursor: pointer;
-            padding: 12px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: var(--sidebar-width);
-            height: 100%;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--cyan);
-            z-index: 1000;
-            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            padding: 80px 15px 20px;
-            overflow-y: auto;
-        }
-
-        .sidebar.active { left: 0; }
-
-        .sidebar h2 {
-            font-family: 'JetBrains Mono';
-            font-size: 0.75rem;
-            color: var(--cyan);
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            opacity: 0.6;
-        }
-
-        .nav-item {
-            width: 100%;
-            padding: 14px 18px;
-            margin-bottom: 5px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid transparent;
-            color: white;
-            text-align: left;
-            font-family: 'JetBrains Mono';
-            font-size: 0.8rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: 0.3s;
-        }
-
-        .nav-item i:first-child { margin-right: 12px; color: var(--cyan); }
-
-        .nav-item:hover {
-            border-color: var(--cyan);
-            background: rgba(0, 242, 255, 0.1);
-        }
-
-        /* BEAUTIFIED SUB-MENU STYLING */
-        .sub-menu {
-            max-height: 0;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.3);
-            transition: max-height 0.3s ease-out;
-            margin-bottom: 5px;
-            border-left: 1px solid var(--cyan);
-            margin-left: 10px;
-        }
-
-        .sub-menu.open { max-height: 500px; }
-
-        .sub-item {
-            display: block;
-            padding: 10px 20px 10px 40px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-family: 'JetBrains Mono';
-            transition: 0.2s;
-        }
-
-        .sub-item:hover { color: var(--cyan); background: rgba(0, 242, 255, 0.05); }
-
-        /* --- DASHBOARD SECTIONS --- */
+        /* --- CONTENT MANAGEMENT --- */
         .tech-container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 100px 20px;
-            display: none;
+            padding: 100px 20px 60px 20px;
+            visibility: hidden;
             opacity: 0;
+            transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .tech-container.active { display: block; opacity: 1; }
+        .tech-container.active { visibility: visible; opacity: 1; }
 
-        header { border-left: 4px solid var(--cyan); padding-left: 20px; margin-bottom: 40px; }
-        .glitch-title { font-size: clamp(1.8rem, 5vw, 3rem); text-transform: uppercase; }
+        .view-section { display: none; animation: slideIn 0.6s ease-out forwards; }
+        .view-section.active-view { display: block; }
 
-        .info-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-left: 5px solid var(--cyan);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .info-card h2 { color: var(--cyan); font-family: 'JetBrains Mono'; margin-bottom: 15px; }
+        header {
+            border-left: 4px solid var(--cyan);
+            padding-left: 20px;
+            margin-bottom: 60px;
+        }
 
-        /* --- GRID (Social Hub) --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; }
+        .glitch-title {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        /* --- CARDS & GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
         .card {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 25px;
+            padding: 30px;
+            position: relative;
             text-decoration: none;
             color: white;
-            transition: 0.3s;
-            border-radius: 2px;
+            transition: 0.4s;
+            backdrop-filter: blur(10px);
         }
-        .card:hover { border-color: var(--cyan); transform: translateY(-5px); background: rgba(0, 242, 255, 0.05); }
-        .card i { font-size: 2rem; color: var(--cyan); margin-bottom: 15px; }
-        .card h3 { font-family: 'JetBrains Mono'; font-size: 1rem; color: var(--cyan); }
-        .btn-label { display: block; margin-top: 15px; font-size: 0.65rem; color: var(--cyan); border-bottom: 1px solid var(--cyan); width: fit-content; }
 
-        footer { margin-top: 50px; font-family: 'JetBrains Mono'; font-size: 0.6rem; text-align: center; opacity: 0.4; }
+        .card:hover {
+            border-color: var(--cyan);
+            background: rgba(0, 242, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .card i { font-size: 2rem; margin-bottom: 20px; color: var(--cyan); }
+        .card h3 { font-family: 'JetBrains Mono'; font-size: 1.1rem; margin-bottom: 10px; color: var(--cyan); }
+        .card p { font-size: 0.85rem; opacity: 0.7; line-height: 1.5; }
+        .btn-label { display: block; margin-top: 20px; font-size: 0.65rem; font-weight: 700; border-bottom: 1px solid var(--cyan); width: max-content; }
+
+        /* Color States */
+        .yt:hover { border-color: #ff0000; } .yt:hover i { color: #ff0000; }
+        .fb:hover { border-color: #1877f2; } .fb:hover i { color: #1877f2; }
+
+        footer { margin-top: 80px; font-family: 'JetBrains Mono'; font-size: 0.6rem; text-align: center; opacity: 0.4; }
 
     </style>
 </head>
 <body>
+
+    <nav id="sidebar">
+        <div class="menu-header">
+            <span>CORE_MENU</span>
+            <i class="fas fa-times" onclick="toggleMenu()" style="cursor:pointer"></i>
+        </div>
+        <div class="menu-item active" onclick="switchView('dashboard')">00. SYSTEM_DASHBOARD</div>
+        <div class="menu-item" onclick="switchView('social-dl')">01. SOCIAL_DL_HUB</div>
+        <div class="menu-item" onclick="switchView('movie-api')">02. VAJIRA_MOVIE_API</div>
+        <div class="menu-item" onclick="switchView('official-api')">03. VAJIRA_OFFICIAL_API</div>
+        <div class="menu-item" onclick="switchView('ai-hub')">04. VAJIRA_AI_HUB</div>
+        <div class="menu-item" onclick="switchView('flexa')">05. FLEXA_LITE</div>
+    </nav>
+
+    <div id="menu-trigger" onclick="toggleMenu()">
+        <i class="fa-solid fa-bars-staggered"></i>
+        <span>SYSTEM_MENU</span>
+    </div>
 
     <div id="loader">
         <div class="scanner"></div>
         <div class="status-text" id="load-msg">Initializing Core...</div>
     </div>
 
-    <button class="menu-btn" onclick="toggleSidebar()">
-        <i class="fa-solid fa-terminal"></i>
-    </button>
+    <div class="tech-container" id="main">
+        <header>
+            <h1 class="glitch-title" id="view-title">Vajira<br>DASHBOARD</h1>
+        </header>
 
-    <nav class="sidebar" id="sidebar">
-        <h2>MAIN_MODULES</h2>
-        
-        <button class="nav-item" onclick="showSection('dashboard-home')">
-            <span><i class="fa-solid fa-gauge-high"></i> 00. DASHBOARD</span>
-        </button>
-
-        <div>
-            <button class="nav-item" onclick="toggleSubMenu('dl-submenu')">
-                <span><i class="fa-solid fa-download"></i> 01. SOCIAL_DL</span>
-                <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem;"></i>
-            </button>
-            <div class="sub-menu" id="dl-submenu">
-                <a href="#" class="sub-item" onclick="showSection('social-hub')">COMMAND_CENTER</a>
-                <a href="ytdl.html" class="sub-item">YOUTUBE_EXTRACTOR</a>
-                <a href="tiktok.html" class="sub-item">TIKTOK_NODES</a>
-                <a href="fb.html" class="sub-item">FACEBOOK_REELS</a>
-            </div>
-        </div>
-
-        <div>
-            <button class="nav-item" onclick="toggleSubMenu('api-submenu')">
-                <span><i class="fa-solid fa-code"></i> 02. VAJIRA_API</span>
-                <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem;"></i>
-            </button>
-            <div class="sub-menu" id="api-submenu">
-                <a href="#" class="sub-item">MOVIE_DATABASE</a>
-                <a href="#" class="sub-item">OFFICIAL_CORE</a>
-                <a href="#" class="sub-item">AI_INTEGRATION</a>
-            </div>
-        </div>
-
-        <button class="nav-item"><i class="fa-solid fa-robot"></i> 03. FLEXA_LITE</button>
-        <button class="nav-item"><i class="fa-solid fa-shield-halved"></i> 04. SECURITY</button>
-    </nav>
-
-    <div class="tech-container" id="main-container">
-        
-        <section id="dashboard-home">
-            <header>
-                <h1 class="glitch-title">Vajira_OS<br>SYSTEM_ROOT</h1>
-            </header>
-            <div class="info-card">
-                <h2>Welcome, User</h2>
-                <p>Accessing encrypted technology node... This dashboard acts as your primary interface for Vajira's downloader tools, AI centers, and API hubs.</p>
-                <p style="margin-top:10px; opacity:0.6; font-size:0.9rem;">Select a module from the sidebar to begin operation.</p>
-            </div>
-        </section>
-
-        <section id="social-hub" style="display:none;">
-            <header>
-                <h1 class="glitch-title">SOCIAL_DL<br>COMMAND_HUB</h1>
-            </header>
+        <div id="view-dashboard" class="view-section active-view">
             <div class="grid">
-                <a href="ytdl.html" class="card"><i class="fa-brands fa-youtube"></i><h3>YOUTUBE_DL</h3><p>Extract 4K Video Streams.</p><span class="btn-label">INITIATE</span></a>
-                <a href="tiktok.html" class="card"><i class="fa-brands fa-tiktok"></i><h3>TIKTOK_DL</h3><p>Remove Watermarks.</p><span class="btn-label">INITIATE</span></a>
-                <a href="fb.html" class="card"><i class="fa-brands fa-facebook"></i><h3>FB_DL</h3><p>Bypass Reels Encryption.</p><span class="btn-label">INITIATE</span></a>
-                <a href="twitter.html" class="card"><i class="fa-brands fa-x-twitter"></i><h3>X_DL</h3><p>Fetch High-Res Media.</p><span class="btn-label">INITIATE</span></a>
+                <div class="card">
+                    <i class="fas fa-microchip"></i>
+                    <h3>SYSTEM_CORE</h3>
+                    <p>Running on Vajira_OS v2.6.0. Node-based architecture for high-speed packet processing and encrypted data retrieval.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-shield-halved"></i>
+                    <h3>ENCRYPTION_LAYER</h3>
+                    <p>AES-256 bit end-to-end tunneling active. All downloader requests are proxied via secure global nodes.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-network-wired"></i>
+                    <h3>NETWORK_STATUS</h3>
+                    <p>Latency: 24ms | Server: Global_Edge | Status: OPTIMAL</p>
+                </div>
             </div>
-        </section>
+        </div>
 
-        <footer>[ VAJIRA_CORE_v2.6.0 ] — STABLE_CONNECTION</footer>
+        <div id="view-social-dl" class="view-section">
+            <div class="grid">
+                <a href="pc-game.html" class="card">
+                    <i class="fa-solid fa-gamepad"></i>
+                    <h3>PC_GAME_DOWNLOADER</h3>
+                    <p>High-performance binaries and core engine files.</p>
+                    <span class="btn-label">INITIATE</span>
+                </a>
+                <a href="ytdl.html" class="card yt">
+                    <i class="fa-brands fa-youtube"></i>
+                    <h3>YOUTUBE_DOWNLOADER</h3>
+                    <p>4K video streams and high-bitrate audio packets.</p>
+                    <span class="btn-label">INITIATE</span>
+                </a>
+                <a href="tiktok.html" class="card">
+                    <i class="fa-brands fa-tiktok"></i>
+                    <h3>TIKTOK_DOWNLOADER</h3>
+                    <p>Strip metadata and watermarks instantly.</p>
+                    <span class="btn-label">INITIATE</span>
+                </a>
+                <a href="fb.html" class="card fb">
+                    <i class="fa-brands fa-facebook"></i>
+                    <h3>FB_DOWNLOADER</h3>
+                    <p>Retrieval of Facebook Reels and private data.</p>
+                    <span class="btn-label">INITIATE</span>
+                </a>
+            </div>
+        </div>
+
+        <div id="view-movie-api" class="view-section">
+            <div class="card">
+                <h3>MOVIE_DATABASE_API</h3>
+                <p>Connect to Vajira Movie Engine. Status: LINK_PENDING</p>
+            </div>
+        </div>
+
+        <div id="view-official-api" class="view-section">
+            <div class="card">
+                <h3>OFFICIAL_VAJIRA_API</h3>
+                <p>Access core developer documentation and endpoints.</p>
+            </div>
+        </div>
+
+        <div id="view-ai-hub" class="view-section">
+            <div class="card">
+                <h3>NEURAL_AI_HUB</h3>
+                <p>Large Language Model interfaces and image generation buffers.</p>
+            </div>
+        </div>
+
+        <div id="view-flexa" class="view-section">
+            <div class="card">
+                <h3>FLEXA_LITE_UI</h3>
+                <p>Ultra-lightweight interface for low-bandwidth environments.</p>
+            </div>
+        </div>
+
+        <footer>[ VAJIRA_OS v.2.6.0 ] — ENCRYPTED CONNECTION</footer>
     </div>
 
     <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        function toggleSubMenu(id) {
-            const menu = document.getElementById(id);
-            menu.classList.toggle('open');
-        }
-
-        function showSection(sectionId) {
-            document.getElementById('dashboard-home').style.display = 'none';
-            document.getElementById('social-hub').style.display = 'none';
-            
-            document.getElementById(sectionId).style.display = 'block';
-            if(window.innerWidth < 1000) toggleSidebar(); 
-        }
-
-        // Loader
-        const msgs = ["Bypassing Firewall...", "Syncing Nodes...", "System Ready."];
+        // Loader Logic
+        const msgs = ["Bypassing Firewall...", "Syncing Data...", "Loading UI...", "Ready."];
         let i = 0;
         const msgEl = document.getElementById('load-msg');
-        const interval = setInterval(() => {
+        const loaderInterval = setInterval(() => {
             if(i < msgs.length) { msgEl.innerText = msgs[i]; i++; }
-        }, 600);
+        }, 400);
 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('loader').style.display = 'none';
-                    document.getElementById('main-container').classList.add('active');
-                    document.getElementById('dashboard-home').style.display = 'block';
+                    document.getElementById('main').classList.add('active');
                 }, 800);
             }, 2000);
         });
+
+        // Sidebar & Navigation Logic
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchView(viewId) {
+            // Remove active classes
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+
+            // Show selected view
+            document.getElementById('view-' + viewId).classList.add('active-view');
+            
+            // Update UI
+            const titleMap = {
+                'dashboard': 'DASHBOARD',
+                'social-dl': 'SOCIAL_DL',
+                'movie-api': 'MOVIE_API',
+                'official-api': 'OFFICIAL_API',
+                'ai-hub': 'AI_HUB',
+                'flexa': 'FLEXA_LITE'
+            };
+            document.getElementById('view-title').innerHTML = `Vajira<br>${titleMap[viewId]}`;
+            
+            // Close menu
+            toggleMenu();
+        }
     </script>
 </body>
 </html>
