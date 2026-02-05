@@ -53,6 +53,49 @@
 
 
 
+/* Fix the submenu alignment (First Image) */
+.submenu-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 50px; /* Aligns dots under the text */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.sub-item {
+    display: block;
+    text-decoration: none !important;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    transition: 0.3s;
+}
+
+/* Fix the Login Textboxes (Second Image) */
+.login-input {
+    width: 100%;
+    background: rgba(0, 242, 255, 0.05) !important;
+    border: 1px solid rgba(0, 242, 255, 0.3) !important;
+    padding: 12px;
+    color: white !important;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+}
+
+.login-primary-btn {
+    width: 100%;
+    background: var(--cyan);
+    border: none;
+    padding: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    color: black;
+}
+
+
+        
 
 
         #top-status-bar {
@@ -917,11 +960,17 @@ const firebaseConfig = {
 };
 
 
-        
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+
+
+// Initialize
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const auth = firebase.auth();
 
+
+        
+        
 // Real Social Login Method
 function handleSocial(providerName) {
     let provider;
