@@ -529,20 +529,23 @@
         </div>
 
         <div class="card">
-            <div class="card-header-flex">
-                <i class="fas fa-battery-three-quarters"></i>
-                <span id="pwr-status" style="font-size: 0.6rem; color: var(--cyan);">DISCHARGING</span>
-            </div>
-            <h3>POWER_MANAGEMENT</h3>
-            <div class="stat-row">
-                <div class="stat-label">BATTERY_LEVEL</div>
-                <div class="progress-container">
-                    <div class="progress-bar" id="bat-bar" style="width: 85%; background: #00ff88; box-shadow: 0 0 10px #00ff88;"></div>
-                </div>
-                <div class="stat-value" id="bat-text">85%</div>
-            </div>
-            <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.5;">SOURCE: <span style="color:white">INTERNAL_CELL</span></p>
+    <div class="card-header-flex">
+        <i class="fas fa-battery-three-quarters" id="bat-icon"></i>
+        <span id="pwr-status" style="font-size: 0.6rem; color: var(--cyan);">SYSTEM_CHECKING...</span>
+    </div>
+    <h3>POWER_MANAGEMENT</h3>
+    <div class="stat-row">
+        <div class="stat-label">REAL_TIME_CAPACITY</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="bat-bar" style="width: 0%; transition: width 1s ease;"></div>
         </div>
+        <div class="stat-value" id="bat-text">--%</div>
+    </div>
+    <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.5;">
+        HEALTH: <span style="color:#00ff88">OPTIMAL</span>
+    </p>
+</div>
+
 
         <div class="card">
             <i class="fas fa-database"></i>
@@ -660,6 +663,58 @@
             }, 2000);
         });
 
+
+
+async function initBattery() {
+    if ('getBattery' in navigator) {
+        const battery = await navigator.getBattery();
+
+        function updateBatteryUI() {
+            // Convert level (0.0 to 1.0) to percentage (0 to 100)
+            const level = Math.floor(battery.level * 100);
+            
+            // Update Text and Bar
+            document.getElementById('bat-text').innerText = level + '%';
+            document.getElementById('bat-bar').style.width = level + '%';
+            
+            // Change color based on level
+            const bar = document.getElementById('bat-bar');
+            if (level <= 20) {
+                bar.style.background = "var(--pink)"; // Low battery warning
+            } else {
+                bar.style.background = "#00ff88"; // Healthy battery
+            }
+
+            // Update Charging Status
+            const statusText = document.getElementById('pwr-status');
+            const batIcon = document.getElementById('bat-icon');
+            
+            if (battery.charging) {
+                statusText.innerText = "CHARGING_CONNECTED";
+                statusText.style.color = "#00ff88";
+                batIcon.className = "fas fa-battery-bolt"; // Change to bolt icon
+            } else {
+                statusText.innerText = "DISCHARGING_INTERNAL";
+                statusText.style.color = "var(--cyan)";
+                batIcon.className = "fas fa-battery-three-quarters";
+            }
+        }
+
+        // Initial update
+        updateBatteryUI();
+
+        // Listen for real-time changes
+        battery.addEventListener('levelchange', updateBatteryUI);
+        battery.addEventListener('chargingchange', updateBatteryUI);
+    } else {
+        document.getElementById('pwr-status').innerText = "API_NOT_SUPPORTED";
+    }
+}
+
+// Call the function
+initBattery();
+
+        
 
         function updateExtendedStats() {
             // Update CPU & RAM (already in your code, keeping it synced)
