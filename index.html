@@ -30,6 +30,25 @@
         }
 
 
+
+
+/* Makes the dot next to GUEST_MODE blink */
+.pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse-glow 1.5s infinite;
+    display: inline-block;
+}
+
+@keyframes pulse-glow {
+    0% { opacity: 1; transform: scale(1); box-shadow: 0 0 2px var(--cyan); }
+    50% { opacity: 0.3; transform: scale(1.2); box-shadow: 0 0 8px var(--cyan); }
+    100% { opacity: 1; transform: scale(1); box-shadow: 0 0 2px var(--cyan); }
+}
+
+
         
         .login-overlay {
             position: fixed;
