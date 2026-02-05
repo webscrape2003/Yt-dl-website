@@ -6,6 +6,9 @@
     <title>Vajira | Tech Hub OS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
     <style>
         :root {
             --cyan: #00f2ff;
@@ -125,36 +128,90 @@
             align-items: center;
         }
 
-        .login-box {
-            background: #05080f;
-            border: 1px solid var(--cyan);
-            padding: 30px;
-            width: 90%;
-            max-width: 380px;
-            box-shadow: 0 0 50px rgba(0, 242, 255, 0.15);
-        }
+        
 
-        .social-auth-grid {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
 
-        .social-btn {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03);
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+/* Enhanced Login UI */
+.login-box {
+    background: rgba(5, 8, 15, 0.95);
+    border: 1px solid var(--cyan);
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 40px rgba(0, 242, 255, 0.2);
+    border-radius: 4px; /* Sharp technical edges */
+}
 
-        /* Brand Colors on Hover */
+.login-input {
+    width: 100%;
+    background: rgba(0, 242, 255, 0.05);
+    border: 1px solid rgba(0, 242, 255, 0.2);
+    padding: 15px;
+    color: white;
+    margin-bottom: 15px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    transition: 0.3s;
+    outline: none;
+}
+
+.login-input:focus {
+    border-color: var(--cyan);
+    background: rgba(0, 242, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.login-primary-btn {
+    width: 100%;
+    background: var(--cyan);
+    color: #000;
+    border: none;
+    padding: 15px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.login-primary-btn:hover {
+    background: white;
+    box-shadow: 0 0 25px white;
+    transform: translateY(-2px);
+}
+
+/* Social Buttons Row */
+.social-auth-grid {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.social-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.social-btn:hover {
+    border-color: var(--cyan);
+    background: rgba(0, 242, 255, 0.1);
+    color: var(--cyan);
+}
+
+
+
+             /* Brand Colors on Hover */
         .social-btn.google:hover { border-color: #ea4335; color: #ea4335; background: rgba(234, 67, 53, 0.1); }
         .social-btn.facebook:hover { border-color: #1877f2; color: #1877f2; background: rgba(24, 119, 242, 0.1); }
         .social-btn.github:hover { border-color: #6e5494; color: #6e5494; background: rgba(110, 84, 148, 0.1); }
+
 
 
 
@@ -849,6 +906,66 @@
 
 
 
+// Firebase Configuration (Replace with your own from Firebase Console)
+const firebaseConfig = {
+  apiKey: "AIzaSyD6wnG-Gd-UIuNOtCHG3r7cxTFqTh9MyHc",
+  authDomain: "vajiraofficial-55739.firebaseapp.com",
+  projectId: "vajiraofficial-55739",
+  storageBucket: "vajiraofficial-55739.firebasestorage.app",
+  messagingSenderId: "837876706312",
+  appId: "1:837876706312:web:2e51c84a73c724bcc275bd"
+};
+
+
+        
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Real Social Login Method
+function handleSocial(providerName) {
+    let provider;
+    
+    if (providerName === 'google') {
+        provider = new firebase.auth.GoogleAuthProvider();
+    } else if (providerName === 'facebook') {
+        provider = new firebase.auth.FacebookAuthProvider();
+    } else if (providerName === 'github') {
+        provider = new firebase.auth.GithubAuthProvider();
+    }
+
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            console.log("Success:", result.user);
+            alert("ACCESS_GRANTED: Welcome " + result.user.displayName);
+            closeLogin();
+            updateUIAfterLogin(result.user);
+        })
+        .catch((error) => {
+            console.error("Auth Error:", error.message);
+            alert("AUTH_FAILED: " + error.message);
+        });
+}
+
+// Real Email/Password Login
+function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+
+    auth.signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+            alert("SESSION_INITIALIZED");
+            closeLogin();
+        })
+        .catch((error) => {
+            alert("ERROR: " + error.message);
+        });
+}
+
+function updateUIAfterLogin(user) {
+    document.getElementById('user-status-text').innerText = user.displayName.toUpperCase();
+    document.querySelector('#login-trigger span').innerText = "ACCOUNT";
+}
 
 
     
@@ -881,19 +998,6 @@ function handleSocial(provider) {
 }
 
 // 4. Update UI after Login
-function handleLogin() {
-    const statusText = document.getElementById('user-status-text');
-    const loginBtn = document.querySelector('#login-trigger span');
-    
-    if(statusText) statusText.innerText = "USER_01_AUTHORIZED";
-    if(loginBtn) loginBtn.innerText = "DASHBOARD_LIVE";
-    
-    closeLogin();
-    
-    // Optional: add a sound effect or glitch transition here
-    console.log("ACCESS_GRANTED: Session initialized.");
-}
-
 
 
 
