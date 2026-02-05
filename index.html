@@ -54,6 +54,18 @@
 
 
 
+
+
+/* Add this to your <style> section */
+.tech-container.locked {
+    filter: blur(10px);
+    pointer-events: none;
+    user-select: none;
+}
+
+
+        
+
 /* Fix the submenu alignment (First Image) */
 .submenu-container {
     display: flex;
@@ -944,18 +956,26 @@
         const msgEl = document.getElementById('load-msg');
         setInterval(() => { if(i < msgs.length) { msgEl.innerText = msgs[i]; i++; } }, 400);
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('main').classList.add('active');
-                }, 800);
-            }, 2000);
-        });
 
 
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            
+            // 1. Show the main container but keep it "locked" (blurred)
+            document.getElementById('main').classList.add('active');
+            document.getElementById('main').classList.add('locked');
+            
+            // 2. Automatically trigger the login modal
+            openLogin(); 
+        }, 800);
+    }, 2000);
+});
 
+
+        
 // Firebase Configuration (Replace with your own from Firebase Console)
 const firebaseConfig = {
   apiKey: "AIzaSyD6wnG-Gd-UIuNOtCHG3r7cxTFqTh9MyHc",
@@ -982,28 +1002,25 @@ function handleLogin() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
 
-    // Check if email format is correct
     if (!email.includes('@')) {
-        alert("SYSTEM_ERROR: Please enter a valid email (e.g., name@gmail.com)");
+        alert("SYSTEM_ERROR: Please enter a valid email");
         return;
     }
 
     auth.signInWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-            alert("ACCESS_GRANTED: Welcome back.");
-            closeLogin();
-            document.getElementById('user-status-text').innerText = "USER_AUTHORIZED";
+            // UNLOCK SYSTEM
+            unlockSystem(userCredential.user.email.split('@')[0].toUpperCase());
         })
         .catch((error) => {
-            // This specifically fixes your "Configuration Not Found" error
-            if (error.code === 'auth/configuration-not-found') {
-                alert("CRITICAL: You must enable 'Email/Password' inside the Firebase Console Sign-in Methods!");
-            } else {
-                alert("AUTH_ERROR: " + error.message);
-            }
+            alert("AUTH_ERROR: " + error.message);
         });
 }
 
+
+
+
+        
 // STEP 4: Social Login Function
 function handleSocial(providerName) {
     let provider;
@@ -1013,13 +1030,11 @@ function handleSocial(providerName) {
 
     auth.signInWithPopup(provider)
         .then((result) => {
-            alert("WELCOME: " + result.user.displayName);
-            closeLogin();
-            document.getElementById('user-status-text').innerText = result.user.displayName.toUpperCase();
+            // UNLOCK SYSTEM
+            unlockSystem(result.user.displayName.toUpperCase());
         })
         .catch((error) => {
-            alert("SOCIAL_AUTH_ERROR: Ensure this provider is ENABLED in Firebase Console.");
-            console.error(error);
+            alert("SOCIAL_AUTH_ERROR: " + error.message);
         });
 }
 
@@ -1035,6 +1050,25 @@ function openLogin() {
 // This function hides the login box
 function closeLogin() {
     document.getElementById('login-modal').style.display = 'none';
+}
+
+
+
+
+function unlockSystem(username) {
+    alert("ACCESS_GRANTED: Welcome " + username);
+    
+    // Hide the login modal
+    closeLogin();
+    
+    // Remove the blur/lock from the dashboard
+    document.getElementById('main').classList.remove('locked');
+    
+    // Update the status bar
+    document.getElementById('user-status-text').innerText = username;
+    
+    // Optional: Play a sound or trigger a final "boot" animation here
+    console.log("System fully unlocked for user: " + username);
 }
 
 
