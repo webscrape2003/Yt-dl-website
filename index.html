@@ -1463,31 +1463,39 @@ const firebaseConfig = {
 
 
 firebase.auth().onAuthStateChanged((user) => {
+    const loader = document.getElementById('loader');
+    const chatBtn = document.getElementById('chat-btn');
+
     if (user) {
-        // 1. Hide Loader
-        document.getElementById('loader').style.display = 'none';
+        console.log("User Logged In:", user.uid);
         
-        // 2. Show Dashboard Elements
-        document.getElementById('chat-btn').style.display = 'flex';
-        
-        // 3. Initialize Features
-        initUserTracking();
+        // 1. Hide the loader
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 500);
+
+        // 2. IMPORTANT: Switch to the dashboard view
+        switchView('dashboard'); 
+
+        // 3. Show the tech-styled chat button
+        if(chatBtn) chatBtn.style.display = 'flex';
+
+        // 4. Update Header Info
+        document.getElementById('user-status-text').innerText = 'SESSION_ACTIVE';
+        document.getElementById('login-trigger').innerHTML = '<i class="fas fa-sign-out-alt"></i><span>LOGOUT</span>';
+        document.getElementById('login-trigger').onclick = () => firebase.auth().signOut();
     } else {
-        // User is not logged in, show login view
-        document.getElementById('loader').style.display = 'none';
-        switchView('login'); // Make sure you have a login view ID
+        // If logged out, hide the chat and loader
+        if(chatBtn) chatBtn.style.display = 'none';
+        loader.style.display = 'none';
+        switchView('login'); // Ensure you have a 'view-login' ID in your HTML
     }
 });
 
-function openChat() { document.getElementById('chat-box').style.display = 'flex'; }
+
+
+   function openChat() { document.getElementById('chat-box').style.display = 'flex'; }
 function closeChat() { document.getElementById('chat-box').style.display = 'none'; }
-
-function initUserTracking() {
-    const db = firebase.database();
-    // Your view counting and live user code goes here...
-}
-
-
+     
         
 
 // --- 2. INITIALIZE FIREBASE FIRST ---
