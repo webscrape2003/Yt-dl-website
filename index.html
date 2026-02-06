@@ -1362,15 +1362,7 @@ function closeTechAlert() {
     document.getElementById('tech-alert').style.display = 'none';
 }
 
-function unlockSystem(username) {
-    // Replace alert() with our custom UI
-    showTechAlert("ACCESS_GRANTED", username);
-    
-    // Original unlock logic
-    closeLogin();
-    document.getElementById('main').classList.remove('locked');
-    document.getElementById('user-status-text').innerText = username;
-}
+
 
 
 
@@ -1382,10 +1374,8 @@ if (!firebase.apps.length) {
 }
 const auth = firebase.auth();
 
-// STEP 3: The Real Login Function
 // --- FIXED EMAIL LOGIN ---
 function handleLogin() {
-    // Get values from the correct slider IDs
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
 
@@ -1396,9 +1386,8 @@ function handleLogin() {
 
     auth.signInWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-            // Success: Unlock the system
             const name = userCredential.user.email.split('@')[0].toUpperCase();
-            unlockSystem(name);
+            unlockSystem(name); // This will close the modal and remove the blur
         })
         .catch((error) => {
             showTechAlert("ACCESS_DENIED", error.message.toUpperCase());
@@ -1407,7 +1396,7 @@ function handleLogin() {
 
 // --- FIXED SIGNUP ---
 function handleSignup() {
-    // Note: These IDs must match your "section-signup" inputs
+    // FIX: Changed IDs to match the signup section fields
     const email = document.getElementById('signup-email').value; 
     const pass = document.getElementById('signup-pass').value;
 
@@ -1424,6 +1413,24 @@ function handleSignup() {
         .catch((error) => {
             showTechAlert("REG_ERROR", error.code.toUpperCase());
         });
+}
+
+// --- ENHANCED UNLOCK SYSTEM ---
+function unlockSystem(username) {
+    // 1. Show the success alert
+    showTechAlert("ACCESS_GRANTED", username);
+    
+    // 2. Close the login portal
+    closeLogin();
+    
+    // 3. CRITICAL: Remove the blur/lock from the main dashboard
+    const mainContainer = document.getElementById('main');
+    if (mainContainer) {
+        mainContainer.classList.remove('locked');
+    }
+    
+    // 4. Update the top status bar text
+    document.getElementById('user-status-text').innerText = username;
 }
 
 
