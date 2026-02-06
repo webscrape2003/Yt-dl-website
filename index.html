@@ -1,4 +1,4 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1362,108 +1362,49 @@ function closeTechAlert() {
     document.getElementById('tech-alert').style.display = 'none';
 }
 
-
+function unlockSystem(username) {
+    // Replace alert() with our custom UI
+    showTechAlert("ACCESS_GRANTED", username);
+    
+    // Original unlock logic
+    closeLogin();
+    document.getElementById('main').classList.remove('locked');
+    document.getElementById('user-status-text').innerText = username;
+}
 
 
 
         
+
 // STEP 2: Initialize Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const auth = firebase.auth();
 
-// --- 1. CORE AUTHENTICATION LOGIC ---
-
+// STEP 3: The Real Login Function
 function handleLogin() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
 
-    if (!email || !pass) {
-        showTechAlert("AUTH_ERROR", "MISSING_CREDENTIALS");
+    if (!email.includes('@')) {
+        alert("SYSTEM_ERROR: Please enter a valid email");
         return;
     }
 
     auth.signInWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-            const name = userCredential.user.email.split('@')[0].toUpperCase();
-            unlockSystem(name);
+            // UNLOCK SYSTEM
+            unlockSystem(userCredential.user.email.split('@')[0].toUpperCase());
         })
         .catch((error) => {
-            showTechAlert("ACCESS_DENIED", error.message.toUpperCase());
+            alert("AUTH_ERROR: " + error.message);
         });
 }
 
-function handleSignup() {
-    const email = document.getElementById('signup-email').value; 
-    const pass = document.getElementById('signup-pass').value;
 
-    if (!email || pass.length < 6) {
-        showTechAlert("SECURITY_FLAW", "INVALID_DATA_OR_SHORT_KEY");
-        return;
-    }
 
-    auth.createUserWithEmailAndPassword(email, pass)
-        .then((userCredential) => {
-            const name = email.split('@')[0].toUpperCase();
-            unlockSystem(name);
-        })
-        .catch((error) => {
-            showTechAlert("REG_ERROR", error.code.toUpperCase());
-        });
-}
 
-function handleSocial(providerName) {
-    let provider;
-    if (providerName === 'google') provider = new firebase.auth.GoogleAuthProvider();
-    if (providerName === 'github') provider = new firebase.auth.GithubAuthProvider();
-
-    auth.signInWithPopup(provider)
-        .then((result) => {
-            unlockSystem(result.user.displayName.toUpperCase());
-        })
-        .catch((error) => {
-            showTechAlert("SOCIAL_ERROR", error.message.toUpperCase());
-        });
-}
-
-function handleAnonymousLogin() {
-    showTechAlert("INITIALIZING_GUEST", "LIMITED_PRIVILEGES_APPLIED");
-    auth.signInAnonymously()
-        .then(() => {
-            unlockSystem("GUEST_USER_" + Math.floor(1000 + Math.random() * 9000));
-        })
-        .catch((error) => {
-            showTechAlert("BOOT_ERROR", "GUEST_LINK_FAILED");
-        });
-}
-
-// --- 2. SYSTEM CONTROL & MODALS ---
-
-function unlockSystem(username) {
-    showTechAlert("ACCESS_GRANTED", username);
-    closeLogin();
-    
-    // Remove blur and lock from dashboard
-    const mainContainer = document.getElementById('main');
-    if (mainContainer) {
-        mainContainer.classList.remove('locked');
-    }
-    
-    document.getElementById('user-status-text').innerText = username;
-}
-
-function openLogin() {
-    document.getElementById('login-modal').style.display = 'flex';
-}
-
-function closeLogin() {
-    document.getElementById('login-modal').style.display = 'none';
-}
-
-// --- 3. UI SLIDER NAVIGATION ---
-
-let isPhoneMode = false;
 
 function switchAuthMode(mode) {
     const slider = document.getElementById('auth-slider');
@@ -1476,25 +1417,131 @@ function switchAuthMode(mode) {
     }
 }
 
+// Update your toggle functions to use the slider
 function togglePhoneMode() {
     isPhoneMode = !isPhoneMode;
     switchAuthMode(isPhoneMode ? 'phone' : 'login');
 }
 
-// --- 4. PHONE AUTH LOGIC ---
+// Add the Anonymous handler back to work with the icon
+function handleAnonymousLogin() {
+    showTechAlert("INITIALIZING_GUEST", "RESTRICTED_ACCESS_ENABLED");
+    auth.signInAnonymously()
+        .then(() => unlockSystem("GUEST_" + Math.floor(Math.random() * 9999)))
+        .catch(err => alert("GUEST_BOOT_ERR: " + err.message));
+}
 
+        
+        
+// STEP 4: Social Login Function
+
+function handleSocial(providerName) {
+    let provider;
+    if (providerName === 'google') provider = new firebase.auth.GoogleAuthProvider();
+    if (providerName === 'github') provider = new firebase.auth.GithubAuthProvider();
+
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            // UNLOCK SYSTEM
+            unlockSystem(result.user.displayName.toUpperCase());
+        })
+        .catch((error) => {
+            alert("SOCIAL_AUTH_ERROR: " + error.message);
+        });
+}
+
+// --- ANONYMOUS GUEST AUTH ---
+// Added to bypass billing/SMS issues for immediate access
+function handleAnonymousLogin() {
+    showTechAlert("INITIALIZING_GUEST", "LIMITED_PRIVILEGES_APPLIED");
+
+    auth.signInAnonymously()
+        .then(() => {
+            // Unlocks system with a unique temporary ID
+            unlockSystem("GUEST_USER_" + Math.floor(1000 + Math.random() * 9000));
+        })
+        .catch((error) => {
+            console.error("Anonymous Auth Failed:", error);
+            alert("GUEST_BOOT_FAILED: " + error.message);
+        });
+}
+        
+// --- LOGIN MODAL CONTROL ---
+function openLogin() {
+    document.getElementById('login-modal').style.display = 'flex';
+}
+
+function closeLogin() {
+    document.getElementById('login-modal').style.display = 'none';
+}
+
+let isLoginMode = true;
+let isPhoneMode = false;
+let confirmationResult; 
+
+function toggleAuthMode() {
+    isPhoneMode = false; 
+    isLoginMode = !isLoginMode;
+    
+    const loginBtn = document.getElementById('login-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const toggleText = document.getElementById('auth-toggle-text');
+    const desc = document.getElementById('auth-description');
+    
+    document.getElementById('email-auth-fields').style.display = 'block';
+    document.getElementById('phone-auth-container').style.display = 'none';
+    document.getElementById('social-container').style.display = 'flex';
+    document.getElementById('divider-text').innerText = "OR_USE_EMAIL";
+    document.getElementById('phone-toggle-text').innerText = "USE_PHONE_NUMBER";
+
+    if (isLoginMode) {
+        loginBtn.style.display = 'block';
+        signupBtn.style.display = 'none';
+        desc.innerText = "SELECT LOGIN PLATFORM IN HERE";
+        toggleText.innerHTML = 'NO_ACCESS_KEY? <span onclick="toggleAuthMode()" style="color: var(--cyan); cursor: pointer; text-decoration: underline;">REGISTER_NEW_USER</span>';
+    } else {
+        loginBtn.style.display = 'none';
+        signupBtn.style.display = 'block';
+        desc.innerText = "CREATE NEW SYSTEM IDENTIFIER";
+        toggleText.innerHTML = 'ALREADY_HAVE_KEY? <span onclick="toggleAuthMode()" style="color: var(--pink); cursor: pointer; text-decoration: underline;">RETURN_TO_LOGIN</span>';
+    }
+}
+
+function togglePhoneMode() {
+    isPhoneMode = !isPhoneMode;
+    const emailFields = document.getElementById('email-auth-fields');
+    const phoneFields = document.getElementById('phone-auth-container');
+    const socialGrid = document.getElementById('social-container');
+    const divider = document.getElementById('divider-text');
+    const phoneToggle = document.getElementById('phone-toggle-text');
+    const desc = document.getElementById('auth-description');
+
+    if (isPhoneMode) {
+        emailFields.style.display = 'none';
+        socialGrid.style.display = 'none';
+        phoneFields.style.display = 'block';
+        desc.innerText = "INITIALIZE SECURE_MOBILE_LINK";
+        divider.innerText = "SECURE_MOBILE_LINK";
+        phoneToggle.innerText = "RETURN_TO_EMAIL";
+    } else {
+        emailFields.style.display = 'block';
+        socialGrid.style.display = 'flex';
+        phoneFields.style.display = 'none';
+        desc.innerText = isLoginMode ? "SELECT LOGIN PLATFORM IN HERE" : "CREATE NEW SYSTEM IDENTIFIER";
+        divider.innerText = "OR_USE_EMAIL";
+        phoneToggle.innerText = "USE_PHONE_NUMBER";
+    }
+}
+
+// --- PHONE AUTH LOGIC ---
 function handlePhoneAuth() {
     const btn = document.getElementById('send-otp-btn');
     const phoneNumber = document.getElementById('phone-number').value;
     
-    if(!phoneNumber) {
-        showTechAlert("INPUT_ERR", "PROVIDE_PHONE_NUMBER");
-        return;
-    }
-
     btn.innerText = "AUTHENTICATING...";
     btn.disabled = true;
 
+    // Fixed: Initialize verifier once to prevent duplication errors
     if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
             'size': 'invisible'
@@ -1511,21 +1558,25 @@ function handlePhoneAuth() {
             btn.innerText = "SEND_OTP_KEY";
             btn.disabled = false;
             
+            // Check for Identity Platform billing issues
             if (error.code === 'auth/billing-not-enabled') {
-                showTechAlert("CRITICAL", "UPGRADE_TO_BLAZE_OR_TEST_NUMBER");
+                alert("CRITICAL_ERROR: Upgrade to Blaze Plan or use Testing Number.");
+            } else if (error.code === 'auth/operation-not-allowed') {
+                alert("REGION_LOCKED: Enable SMS for Sri Lanka in Firebase Console.");
             } else {
-                showTechAlert("SMS_FAILED", error.code.toUpperCase());
+                alert("SMS_FAILED: " + error.message);
             }
         });
 }
 
 function verifyOtp() {
     const code = document.getElementById('verification-code').value;
+    
     confirmationResult.confirm(code).then((result) => {
         const user = result.user;
         unlockSystem("MOBILE_USER_" + user.phoneNumber.slice(-4));
     }).catch((error) => {
-        showTechAlert("INVALID_CODE", "VERIFICATION_FAILED");
+        alert("INVALID_CODE: Verification failed.");
     });
 }
 
@@ -1534,8 +1585,51 @@ function verifyOtp() {
 
 
 
+        
+        
+
+function handleSignup() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+
+    if (pass.length < 6) {
+        alert("SECURITY_FLAW: Password must be at least 6 characters.");
+        return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+            alert("CREDENTIALS_CREATED: Welcome to the system.");
+            unlockSystem(email.split('@')[0].toUpperCase()); // Uses the first part of email as username
+        })
+        .catch((error) => {
+            if (error.code === 'auth/email-already-in-use') {
+                alert("ERROR: User already exists. Try logging in.");
+            } else {
+                alert("REGISTRATION_ERROR: " + error.message);
+            }
+        });
+}
 
         
+
+function unlockSystem(username) {
+    alert("ACCESS_GRANTED: Welcome " + username);
+    
+    // Hide the login modal
+    closeLogin();
+    
+    // Remove the blur/lock from the dashboard
+    document.getElementById('main').classList.remove('locked');
+    
+    // Update the status bar
+    document.getElementById('user-status-text').innerText = username;
+    
+    // Optional: Play a sound or trigger a final "boot" animation here
+    console.log("System fully unlocked for user: " + username);
+}
+
+
 
         
         
