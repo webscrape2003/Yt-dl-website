@@ -1383,25 +1383,48 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 // STEP 3: The Real Login Function
+// --- FIXED EMAIL LOGIN ---
 function handleLogin() {
+    // Get values from the correct slider IDs
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
 
-    if (!email.includes('@')) {
-        alert("SYSTEM_ERROR: Please enter a valid email");
+    if (!email || !pass) {
+        showTechAlert("AUTH_ERROR", "MISSING_CREDENTIALS");
         return;
     }
 
     auth.signInWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-            // UNLOCK SYSTEM
-            unlockSystem(userCredential.user.email.split('@')[0].toUpperCase());
+            // Success: Unlock the system
+            const name = userCredential.user.email.split('@')[0].toUpperCase();
+            unlockSystem(name);
         })
         .catch((error) => {
-            alert("AUTH_ERROR: " + error.message);
+            showTechAlert("ACCESS_DENIED", error.message.toUpperCase());
         });
 }
 
+// --- FIXED SIGNUP ---
+function handleSignup() {
+    // Note: These IDs must match your "section-signup" inputs
+    const email = document.getElementById('signup-email').value; 
+    const pass = document.getElementById('signup-pass').value;
+
+    if (!email || pass.length < 6) {
+        showTechAlert("SECURITY_FLAW", "INVALID_DATA_OR_SHORT_KEY");
+        return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+            const name = email.split('@')[0].toUpperCase();
+            unlockSystem(name);
+        })
+        .catch((error) => {
+            showTechAlert("REG_ERROR", error.code.toUpperCase());
+        });
+}
 
 
 
@@ -1578,33 +1601,6 @@ function verifyOtp() {
 
 
         
-        
-
-function handleSignup() {
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-pass').value;
-
-    if (pass.length < 6) {
-        alert("SECURITY_FLAW: Password must be at least 6 characters.");
-        return;
-    }
-
-    auth.createUserWithEmailAndPassword(email, pass)
-        .then((userCredential) => {
-            alert("CREDENTIALS_CREATED: Welcome to the system.");
-            unlockSystem(email.split('@')[0].toUpperCase()); // Uses the first part of email as username
-        })
-        .catch((error) => {
-            if (error.code === 'auth/email-already-in-use') {
-                alert("ERROR: User already exists. Try logging in.");
-            } else {
-                alert("REGISTRATION_ERROR: " + error.message);
-            }
-        });
-}
-
-
-
 
         
         
