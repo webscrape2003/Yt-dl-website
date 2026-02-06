@@ -1120,19 +1120,24 @@
 
 <div class="card">
     <div class="card-header-flex">
-        <i class="fas fa-users"></i>
-        <span class="live-tag"><span class="pulse-dot"></span> ACTIVE</span>
+        <i class="fas fa-network-wired"></i>
+        <span class="live-tag"><span class="pulse-dot"></span> LIVE_TRAFFIC</span>
     </div>
-    <h3>NETWORK_TRAFFIC</h3>
+    <h3>NETWORK_MONITOR</h3>
     <div class="stat-row">
-        <div class="stat-label">LIVE_USERS</div>
-        <div class="stat-value" id="user-count">0</div>
+        <div class="stat-label">CURRENT_ACTIVE_USERS</div>
+        <div class="stat-value" id="user-count">00</div>
     </div>
     <div class="stat-row">
-        <div class="stat-label">COORDINATES</div>
-        <div class="stat-value" id="user-location" style="font-size: 0.6rem; color: var(--cyan);">SEARCHING...</div>
+        <div class="stat-label">TOTAL_SYSTEM_VIEWS</div>
+        <div class="stat-value" id="total-views" style="color: var(--pink);">0000</div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-label">LAST_KNOWN_LOCATION</div>
+        <div id="user-location" style="font-family:'JetBrains Mono'; font-size:0.6rem; color:var(--cyan);">SYNCING...</div>
     </div>
 </div>
+
 
 
         
@@ -1327,50 +1332,55 @@ const firebaseConfig = {
 
 
 
-    // 2. INITIALIZE FIREBASE FIRST
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+// --- 2. INITIALIZE FIREBASE FIRST ---
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// --- 3. NOW START DATABASE FEATURES ---
+const db = firebase.database();
+const myStatusRef = db.ref('status/users').push();
+const totalViewsRef = db.ref('status/totalViews');
+
+// A. Handle Total Page Views (Increments once per load)
+totalViewsRef.transaction((current) => (current || 0) + 1);
+
+totalViewsRef.on('value', (snapshot) => {
+    const views = snapshot.val() || 0;
+    if(document.getElementById('total-views')) {
+        document.getElementById('total-views').innerText = views.toString().padStart(4, '0');
     }
+});
 
-    // 3. NOW PUT YOUR TRACKING CODE HERE
-    const db = firebase.database();
-    const myStatusRef = db.ref('status/users').push();
+// B. Handle Live User Connections & Location
+db.ref('.info/connected').on('value', (snapshot) => {
+    if (snapshot.val() === true) {
+        myStatusRef.onDisconnect().remove(); // Remove user when tab closes
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                myStatusRef.set({ status: 'online', lat: pos.coords.latitude, lng: pos.coords.longitude });
+            }, () => {
+                myStatusRef.set({ status: 'online', lat: 'HIDDEN' });
+            });
+        }
+    }
+});
 
-    db.ref('.info/connected').on('value', (snapshot) => {
-        if (snapshot.val() === true) {
-            myStatusRef.onDisconnect().remove();
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    myStatusRef.set({
-                        status: 'online',
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        time: firebase.database.ServerValue.TIMESTAMP
-                    });
-                }, () => {
-                    myStatusRef.set({ status: 'online', lat: 'HIDDEN', lng: 'HIDDEN' });
-                });
-            }
+// C. Update UI for Live Users
+db.ref('status/users').on('value', (snapshot) => {
+    const count = snapshot.numChildren();
+    if(document.getElementById('user-count')) {
+        document.getElementById('user-count').innerText = count.toString().padStart(2, '0');
+    }
+    
+    snapshot.forEach((child) => {
+        const data = child.val();
+        if(data.lat && data.lat !== 'HIDDEN' && document.getElementById('user-location')) {
+            document.getElementById('user-location').innerText = `${data.lat.toFixed(2)}, ${data.lng.toFixed(2)}`;
         }
     });
-
-    // Listener for UI updates
-    db.ref('status/users').on('value', (snapshot) => {
-        const count = snapshot.numChildren();
-        const countElement = document.getElementById('user-count');
-        const locElement = document.getElementById('user-location');
-        
-        if(countElement) countElement.innerText = count;
-        
-        snapshot.forEach((child) => {
-            const data = child.val();
-            if(locElement && data.lat && data.lat !== 'HIDDEN') {
-                locElement.innerText = `${data.lat.toFixed(2)}, ${data.lng.toFixed(2)}`;
-            }
-        });
-    });
-
-    // ... The rest of your existing loader and UI functions go here ...
+});
 
 
 
