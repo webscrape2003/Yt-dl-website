@@ -1115,6 +1115,29 @@
 
 <div id="view-dashboard" class="view-section active-view">
     <div class="grid">
+
+
+<div class="card">
+    <div class="card-header-flex">
+        <i class="fas fa-users-viewfinder"></i>
+        <span class="live-tag"><span class="pulse-dot"></span> REALTIME</span>
+    </div>
+    <h3>TRAFFIC_MONITOR</h3>
+    <div class="stat-row">
+        <div class="stat-label">TOTAL_SYSTEM_VISITS</div>
+        <div class="view-count-display" style="font-size: 2rem; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); font-family: 'JetBrains Mono'; margin: 10px 0;">
+            <span id="visit-count">0000</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="visit-bar" style="width: 100%; opacity: 0.5;"></div>
+        </div>
+        <p style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 1px;">STATUS: MONITORING_LIVE_TRAFFIC</p>
+    </div>
+</div>
+
+
+
+        
         <div class="card">
             <div class="card-header-flex">
                 <i class="fas fa-microchip"></i>
@@ -1277,6 +1300,42 @@ window.addEventListener('load', () => {
 });
 
 
+
+
+// 1. Initialize Database Reference (Place this near your auth const)
+const database = firebase.database();
+
+// 2. Function to Handle Real-Time Counter
+function initVisitorCounter() {
+    const visitRef = database.ref('system_stats/visitor_count');
+
+    // Increment count on every new session (Page Load)
+    visitRef.transaction((currentValue) => {
+        return (currentValue || 0) + 1;
+    });
+
+    // Listen for real-time updates to display to all users
+    visitRef.on('value', (snapshot) => {
+        const count = snapshot.val();
+        const display = document.getElementById('visit-count');
+        
+        // Formats number to look like a tech counter (e.g., 0042)
+        if (display) {
+            display.innerText = count.toString().padStart(4, '0');
+            
+            // Subtle pulse effect when number changes
+            display.style.animation = 'none';
+            display.offsetHeight; // trigger reflow
+            display.style.animation = 'headerFlicker 0.5s ease';
+        }
+    });
+}
+
+// 3. Call the function
+initVisitorCounter();
+
+
+        
         
 // Firebase Configuration (Replace with your own from Firebase Console)
 const firebaseConfig = {
