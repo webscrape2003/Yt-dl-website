@@ -1386,36 +1386,6 @@
 
 
 
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // 1. Hide Loader
-        document.getElementById('loader').style.display = 'none';
-        
-        // 2. Show Dashboard Elements
-        document.getElementById('chat-btn').style.display = 'flex';
-        
-        // 3. Initialize Features
-        initUserTracking();
-    } else {
-        // User is not logged in, show login view
-        document.getElementById('loader').style.display = 'none';
-        switchView('login'); // Make sure you have a login view ID
-    }
-});
-
-function openChat() { document.getElementById('chat-box').style.display = 'flex'; }
-function closeChat() { document.getElementById('chat-box').style.display = 'none'; }
-
-function initUserTracking() {
-    const db = firebase.database();
-    // Your view counting and live user code goes here...
-}
-
-
-
-
-
-
 
         
         // Loading
@@ -1490,6 +1460,35 @@ const firebaseConfig = {
 
 
 
+
+
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        // 1. Hide Loader
+        document.getElementById('loader').style.display = 'none';
+        
+        // 2. Show Dashboard Elements
+        document.getElementById('chat-btn').style.display = 'flex';
+        
+        // 3. Initialize Features
+        initUserTracking();
+    } else {
+        // User is not logged in, show login view
+        document.getElementById('loader').style.display = 'none';
+        switchView('login'); // Make sure you have a login view ID
+    }
+});
+
+function openChat() { document.getElementById('chat-box').style.display = 'flex'; }
+function closeChat() { document.getElementById('chat-box').style.display = 'none'; }
+
+function initUserTracking() {
+    const db = firebase.database();
+    // Your view counting and live user code goes here...
+}
+
+
+        
 
 // --- 2. INITIALIZE FIREBASE FIRST ---
 if (!firebase.apps.length) {
