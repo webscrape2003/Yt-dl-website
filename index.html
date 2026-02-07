@@ -918,7 +918,11 @@
 <body>
 
 
+<audio id="bg-music" loop style="display:none;">
+    <source src="https://cdn401.savetube.vip/media/6N9fO8PY3Y8/alan-walker-alok-headlights-albert-vishi-remix-feat-kiddo-128-ytshorts.savetube.me.mp3" type="audio/mpeg">
+</audio>
 
+    
 
 <div id="tech-alert" class="tech-alert-overlay">
     <div class="tech-alert-box">
@@ -1297,6 +1301,10 @@
 
 
 
+
+  
+        
+
    function toggleCbox() {
         const windowEl = document.getElementById('cbox-window');
         const bubble = document.getElementById('cbox-bubble');
@@ -1325,6 +1333,26 @@
 
 
 
+window.addEventListener('load', () => {
+    const music = document.getElementById('bg-music');
+    music.volume = 0.5;
+    const playMusic = () => {
+        music.play().then(() => {
+            console.log("Audio started successfully");
+        }).catch(err => {
+            console.log("Waiting for user interaction to play audio...");
+            document.addEventListener('click', () => {
+                music.play();
+            }, { once: true });
+        });
+    };
+    setTimeout(playMusic, 2500); 
+});
+
+
+        
+
+        
 window.addEventListener('load', () => {
     setTimeout(() => {
         document.getElementById('loader').style.opacity = '0';
