@@ -1403,88 +1403,8 @@
 
 
 
-// --- ADMIN CONFIGURATION ---
-const ADMIN_EMAIL = "vajirarathnayaka529@gmail.com"; // Change to your login email
-const ADMIN_SECRET_KEY = "Vajira2003@"; // Change to your chosen system password
 
-// Toggle Dropdown
-function toggleNotifications() {
-    const dropdown = document.getElementById('notification-dropdown');
-    const dot = document.getElementById('nav-red-dot');
-    
-    if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-    } else {
-        dropdown.style.display = 'block';
-        dot.style.display = 'none'; // Hide red dot when user clicks
-    }
-}
 
-// Check if logged in user is admin
-function checkAdminAccess(email) {
-    if(email.toUpperCase() === ADMIN_EMAIL.toUpperCase()) {
-        document.getElementById('admin-panel').style.display = 'block';
-        console.log("ADMIN_MODULE_ACTIVATED");
-    }
-}
-
-// Override your existing unlockSystem to include the admin check
-const originalUnlock = unlockSystem;
-unlockSystem = function(username) {
-    originalUnlock(username); // Call original
-    const user = firebase.auth().currentUser;
-    if(user) checkAdminAccess(user.email);
-};
-
-// Send Notification to Firebase
-function sendGlobalNotification() {
-    const msg = document.getElementById('admin-notif-msg').value;
-    const date = document.getElementById('admin-notif-date').value;
-    const pass = document.getElementById('admin-system-pass').value;
-    const status = document.getElementById('admin-status');
-
-    if(!msg || !date) return alert("FIELDS_REQUIRED");
-
-    if(pass !== ADMIN_SECRET_KEY) {
-        status.innerText = "> ACCESS_DENIED: INVALID_SYSTEM_KEY";
-        status.style.color = "var(--pink)";
-        return;
-    }
-
-    db.ref('system/notifications').push({
-        message: msg,
-        timestamp: date,
-        type: "SYSTEM_BROADCAST"
-    }).then(() => {
-        status.innerText = "> BROADCAST_SENT_SUCCESSFULLY";
-        status.style.color = "var(--cyan)";
-        document.getElementById('admin-notif-msg').value = "";
-        document.getElementById('admin-system-pass').value = "";
-    });
-}
-
-// Firebase Listener (Runs for EVERYONE)
-db.ref('system/notifications').limitToLast(10).on('value', (snapshot) => {
-    const content = document.getElementById('notif-content');
-    const dot = document.getElementById('nav-red-dot');
-    content.innerHTML = ""; 
-
-    snapshot.forEach((child) => {
-        const data = child.val();
-        const html = `
-            <div class="notif-item">
-                <span class="notif-time">${data.timestamp}</span>
-                <div class="notif-text">${data.message}</div>
-            </div>
-        `;
-        content.insertAdjacentHTML('afterbegin', html);
-    });
-
-    // Show the red dot for all users when a new notification arrives
-    dot.style.display = 'block';
-});
-
-  
         
 
    function toggleCbox() {
@@ -1573,6 +1493,98 @@ const firebaseConfig = {
 
 
 
+
+
+
+// --- ADMIN CONFIGURATION ---
+const ADMIN_EMAIL = "vajirarathnayaka529@gmail.com"; // Change to your login email
+const ADMIN_SECRET_KEY = "Vajira2003@"; // Change to your chosen system password
+
+// Toggle Dropdown
+function toggleNotifications() {
+    const dropdown = document.getElementById('notification-dropdown');
+    const dot = document.getElementById('nav-red-dot');
+    
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        dropdown.style.display = 'block';
+        dot.style.display = 'none'; // Hide red dot when user clicks
+    }
+}
+
+// Check if logged in user is admin
+function checkAdminAccess(email) {
+    if(email.toUpperCase() === ADMIN_EMAIL.toUpperCase()) {
+        document.getElementById('admin-panel').style.display = 'block';
+        console.log("ADMIN_MODULE_ACTIVATED");
+    }
+}
+
+// Override your existing unlockSystem to include the admin check
+const originalUnlock = unlockSystem;
+unlockSystem = function(username) {
+    originalUnlock(username); // Call original
+    const user = firebase.auth().currentUser;
+    if(user) checkAdminAccess(user.email);
+};
+
+// Send Notification to Firebase
+function sendGlobalNotification() {
+    const msg = document.getElementById('admin-notif-msg').value;
+    const date = document.getElementById('admin-notif-date').value;
+    const pass = document.getElementById('admin-system-pass').value;
+    const status = document.getElementById('admin-status');
+
+    if(!msg || !date) return alert("FIELDS_REQUIRED");
+
+    if(pass !== ADMIN_SECRET_KEY) {
+        status.innerText = "> ACCESS_DENIED: INVALID_SYSTEM_KEY";
+        status.style.color = "var(--pink)";
+        return;
+    }
+
+    db.ref('system/notifications').push({
+        message: msg,
+        timestamp: date,
+        type: "SYSTEM_BROADCAST"
+    }).then(() => {
+        status.innerText = "> BROADCAST_SENT_SUCCESSFULLY";
+        status.style.color = "var(--cyan)";
+        document.getElementById('admin-notif-msg').value = "";
+        document.getElementById('admin-system-pass').value = "";
+    });
+}
+
+// Firebase Listener (Runs for EVERYONE)
+db.ref('system/notifications').limitToLast(10).on('value', (snapshot) => {
+    const content = document.getElementById('notif-content');
+    const dot = document.getElementById('nav-red-dot');
+    content.innerHTML = ""; 
+
+    snapshot.forEach((child) => {
+        const data = child.val();
+        const html = `
+            <div class="notif-item">
+                <span class="notif-time">${data.timestamp}</span>
+                <div class="notif-text">${data.message}</div>
+            </div>
+        `;
+        content.insertAdjacentHTML('afterbegin', html);
+    });
+
+    // Show the red dot for all users when a new notification arrives
+    dot.style.display = 'block';
+});
+
+
+
+
+
+
+
+
+        
 // --- 2. INITIALIZE FIREBASE FIRST ---
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
