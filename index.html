@@ -37,105 +37,61 @@
 
 
 
-/* Notification Container */
-.notification-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-#notification-trigger {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    padding: 10px;
-    color: var(--cyan);
-    cursor: pointer;
-    font-size: 1.1rem;
-    backdrop-filter: blur(10px);
-    transition: 0.3s;
-    position: relative;
-}
-
-#notification-trigger:hover {
-    border-color: var(--cyan);
-    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
-}
-
-/* The Red Dot */
+/* Notification Styling */
 .notification-dot {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 8px;
-    height: 8px;
-    background: #ff0055; /* Cyber Red */
+    top: 5px; right: 5px;
+    width: 8px; height: 8px;
+    background: #ff0055;
     border-radius: 50%;
-    box-shadow: 0 0 8px #ff0055;
-    display: block; /* Show by default for new updates */
+    box-shadow: 0 0 10px #ff0055;
+    animation: pulse-red 1.5s infinite;
 }
 
-/* Dropdown Window */
+@keyframes pulse-red {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 .notif-dropdown {
     position: absolute;
-    top: 55px;
-    right: 0;
+    top: 55px; right: 0;
     width: 300px;
     background: rgba(5, 8, 15, 0.98);
     border: 1px solid var(--cyan);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    display: none; /* Controlled by JS */
+    display: none;
     z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
 
 .notif-header {
     padding: 12px;
-    font-family: 'JetBrains Mono';
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--cyan);
-    border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+    border-bottom: 1px solid var(--border);
     letter-spacing: 2px;
 }
 
-.notif-body {
-    max-height: 350px;
-    overflow-y: auto;
-}
+.notif-body { max-height: 350px; overflow-y: auto; }
 
 .notif-item {
     padding: 15px;
-    display: flex;
-    gap: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: 0.3s;
 }
 
-.notif-item:hover {
-    background: rgba(0, 242, 255, 0.05);
-}
-
-.notif-item.unread {
-    border-left: 2px solid var(--pink);
-}
-
-.notif-item i {
-    color: var(--cyan);
-    font-size: 0.9rem;
-    margin-top: 3px;
-}
-
-.notif-text p {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.4;
-}
+.notif-item:hover { background: rgba(0, 242, 255, 0.05); }
 
 .notif-time {
     display: block;
     font-size: 0.6rem;
     color: var(--pink);
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     font-family: 'JetBrains Mono';
 }
 
+.notif-text { font-size: 0.75rem; color: #fff; line-height: 1.4; }
 
 
 
@@ -1054,21 +1010,15 @@
         <span id="user-status-text">GUEST_MODE</span>
     </div>
 
-    <div class="notification-wrapper">
-        <button id="notification-trigger" onclick="toggleNotifications()">
+    <div class="notification-wrapper" style="position: relative; display: inline-block;">
+        <button id="notification-trigger" onclick="toggleNotifications()" style="background: var(--glass); border: 1px solid var(--border); padding: 10px; color: var(--cyan); cursor: pointer; font-size: 1.1rem; backdrop-filter: blur(10px); transition: 0.3s;">
             <i class="fas fa-bell"></i>
-            <span id="nav-red-dot" class="notification-dot"></span>
+            <span id="nav-red-dot" class="notification-dot" style="display:none;"></span>
         </button>
         <div id="notification-dropdown" class="notif-dropdown">
             <div class="notif-header">SYSTEM_NOTIFICATIONS</div>
             <div id="notif-content" class="notif-body">
-                <div class="notif-item unread">
-                    <i class="fas fa-info-circle"></i>
-                    <div class="notif-text">
-                        <span class="notif-time">JUST NOW</span>
-                        <p>SYSTEM_UPDATE: Vajira Core v.2.6.0 is now live.</p>
-                    </div>
-                </div>
+                <div class="notif-placeholder" style="padding:20px; font-size:0.7rem; opacity:0.5; text-align:center;">NO_NEW_DATA</div>
             </div>
         </div>
     </div>
@@ -1076,6 +1026,30 @@
         <i class="fas fa-user-circle"></i>
         <span>LOGIN</span>
     </button>
+</div>
+
+<div class="card" id="admin-panel" style="display: none; border-color: var(--pink); grid-column: 1 / -1;">
+    <div class="card-header-flex">
+        <i class="fas fa-user-shield" style="color: var(--pink);"></i>
+        <span class="live-tag" style="background: rgba(255, 0, 200, 0.1); color: var(--pink);">ADMIN_OVERRIDE</span>
+    </div>
+    <h3>BROADCAST_CONTROL_UNIT</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+        <div class="stat-row">
+            <div class="stat-label">NOTIF_MESSAGE</div>
+            <input type="text" id="admin-notif-msg" class="login-input" placeholder="Enter system message...">
+        </div>
+        <div class="stat-row">
+            <div class="stat-label">DATE_STAMP</div>
+            <input type="text" id="admin-notif-date" class="login-input" placeholder="e.g. 11 FEB 2026">
+        </div>
+    </div>
+    <div class="stat-row">
+        <div class="stat-label">SYSTEM_ACCESS_KEY (PASSWORD)</div>
+        <input type="password" id="admin-system-pass" class="login-input" placeholder="Enter Admin Secret Password">
+    </div>
+    <button class="cyber-btn pink-bg" onclick="sendGlobalNotification()" style="width:200px;">SEND_BROADCAST</button>
+    <p id="admin-status" style="font-size: 0.65rem; margin-top: 10px; color: var(--cyan); font-family: 'JetBrains Mono';"></p>
 </div>
 
 
@@ -1429,27 +1403,86 @@
 
 
 
+// --- ADMIN CONFIGURATION ---
+const ADMIN_EMAIL = "vajirarathnayaka529@gmail.com"; // Change to your login email
+const ADMIN_SECRET_KEY = "Vajira2003@"; // Change to your chosen system password
+
+// Toggle Dropdown
 function toggleNotifications() {
     const dropdown = document.getElementById('notification-dropdown');
     const dot = document.getElementById('nav-red-dot');
     
-    // Toggle the visibility
     if (dropdown.style.display === 'block') {
         dropdown.style.display = 'none';
     } else {
         dropdown.style.display = 'block';
-        // Once opened, hide the red dot
-        dot.style.display = 'none';
+        dot.style.display = 'none'; // Hide red dot when user clicks
     }
 }
 
-// Close dropdown if user clicks outside
-window.onclick = function(event) {
-    if (!event.target.closest('.notification-wrapper')) {
-        const dropdown = document.getElementById('notification-dropdown');
-        if (dropdown) dropdown.style.display = 'none';
+// Check if logged in user is admin
+function checkAdminAccess(email) {
+    if(email.toUpperCase() === ADMIN_EMAIL.toUpperCase()) {
+        document.getElementById('admin-panel').style.display = 'block';
+        console.log("ADMIN_MODULE_ACTIVATED");
     }
 }
+
+// Override your existing unlockSystem to include the admin check
+const originalUnlock = unlockSystem;
+unlockSystem = function(username) {
+    originalUnlock(username); // Call original
+    const user = firebase.auth().currentUser;
+    if(user) checkAdminAccess(user.email);
+};
+
+// Send Notification to Firebase
+function sendGlobalNotification() {
+    const msg = document.getElementById('admin-notif-msg').value;
+    const date = document.getElementById('admin-notif-date').value;
+    const pass = document.getElementById('admin-system-pass').value;
+    const status = document.getElementById('admin-status');
+
+    if(!msg || !date) return alert("FIELDS_REQUIRED");
+
+    if(pass !== ADMIN_SECRET_KEY) {
+        status.innerText = "> ACCESS_DENIED: INVALID_SYSTEM_KEY";
+        status.style.color = "var(--pink)";
+        return;
+    }
+
+    db.ref('system/notifications').push({
+        message: msg,
+        timestamp: date,
+        type: "SYSTEM_BROADCAST"
+    }).then(() => {
+        status.innerText = "> BROADCAST_SENT_SUCCESSFULLY";
+        status.style.color = "var(--cyan)";
+        document.getElementById('admin-notif-msg').value = "";
+        document.getElementById('admin-system-pass').value = "";
+    });
+}
+
+// Firebase Listener (Runs for EVERYONE)
+db.ref('system/notifications').limitToLast(10).on('value', (snapshot) => {
+    const content = document.getElementById('notif-content');
+    const dot = document.getElementById('nav-red-dot');
+    content.innerHTML = ""; 
+
+    snapshot.forEach((child) => {
+        const data = child.val();
+        const html = `
+            <div class="notif-item">
+                <span class="notif-time">${data.timestamp}</span>
+                <div class="notif-text">${data.message}</div>
+            </div>
+        `;
+        content.insertAdjacentHTML('afterbegin', html);
+    });
+
+    // Show the red dot for all users when a new notification arrives
+    dot.style.display = 'block';
+});
 
   
         
