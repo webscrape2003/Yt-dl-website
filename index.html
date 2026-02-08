@@ -37,7 +37,10 @@
 
 
 
-/* Notification Styling */
+
+
+
+/* Notification Specifics */
 .notification-dot {
     position: absolute;
     top: 5px; right: 5px;
@@ -71,6 +74,7 @@
     color: var(--cyan);
     border-bottom: 1px solid var(--border);
     letter-spacing: 2px;
+    font-family: 'JetBrains Mono';
 }
 
 .notif-body { max-height: 350px; overflow-y: auto; }
@@ -78,10 +82,7 @@
 .notif-item {
     padding: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: 0.3s;
 }
-
-.notif-item:hover { background: rgba(0, 242, 255, 0.05); }
 
 .notif-time {
     display: block;
@@ -95,8 +96,8 @@
 
 
 
-        
 
+        
 
 .auth-portal {
     width: 380px;
@@ -1004,6 +1005,7 @@
 
 
 
+
 <div id="top-status-bar">
     <div class="status-connection">
         <span class="pulse-dot"></span>
@@ -1011,17 +1013,18 @@
     </div>
 
     <div class="notification-wrapper" style="position: relative; display: inline-block;">
-        <button id="notification-trigger" onclick="toggleNotifications()" style="background: var(--glass); border: 1px solid var(--border); padding: 10px; color: var(--cyan); cursor: pointer; font-size: 1.1rem; backdrop-filter: blur(10px); transition: 0.3s;">
+        <button id="notification-trigger" onclick="toggleNotifications()" style="background: var(--glass); border: 1px solid var(--border); padding: 10px; color: var(--cyan); cursor: pointer; font-size: 1.1rem; backdrop-filter: blur(10px); display: flex; align-items: center; position: relative;">
             <i class="fas fa-bell"></i>
             <span id="nav-red-dot" class="notification-dot" style="display:none;"></span>
         </button>
         <div id="notification-dropdown" class="notif-dropdown">
             <div class="notif-header">SYSTEM_NOTIFICATIONS</div>
             <div id="notif-content" class="notif-body">
-                <div class="notif-placeholder" style="padding:20px; font-size:0.7rem; opacity:0.5; text-align:center;">NO_NEW_DATA</div>
+                <div style="padding:20px; text-align:center; font-size:0.6rem; opacity:0.5;">INITIALIZING_FEED...</div>
             </div>
         </div>
     </div>
+
     <button id="login-trigger" onclick="openLogin()">
         <i class="fas fa-user-circle"></i>
         <span>LOGIN</span>
@@ -1037,24 +1040,30 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
         <div class="stat-row">
             <div class="stat-label">NOTIF_MESSAGE</div>
-            <input type="text" id="admin-notif-msg" class="login-input" placeholder="Enter system message...">
+            <input type="text" id="admin-notif-msg" class="login-input" placeholder="Update message...">
         </div>
         <div class="stat-row">
             <div class="stat-label">DATE_STAMP</div>
-            <input type="text" id="admin-notif-date" class="login-input" placeholder="e.g. 11 FEB 2026">
+            <input type="text" id="admin-notif-date" class="login-input" placeholder="e.g. 10 FEB 2026">
         </div>
     </div>
     <div class="stat-row">
-        <div class="stat-label">SYSTEM_ACCESS_KEY (PASSWORD)</div>
-        <input type="password" id="admin-system-pass" class="login-input" placeholder="Enter Admin Secret Password">
+        <div class="stat-label">SYSTEM_ACCESS_KEY</div>
+        <input type="password" id="admin-system-pass" class="login-input" placeholder="Enter System Password">
     </div>
-    <button class="cyber-btn pink-bg" onclick="sendGlobalNotification()" style="width:200px;">SEND_BROADCAST</button>
-    <p id="admin-status" style="font-size: 0.65rem; margin-top: 10px; color: var(--cyan); font-family: 'JetBrains Mono';"></p>
+    <button class="cyber-btn pink-bg" onclick="sendGlobalNotification()" style="width:220px;">SEND_BROADCAST</button>
+    <p id="admin-status" style="font-size: 0.6rem; margin-top: 10px; color: var(--cyan);"></p>
 </div>
 
 
 
 
+
+
+
+
+
+    
 
     
 <div id="login-modal" class="login-overlay">
@@ -1404,7 +1413,7 @@
 
 
 
-
+  
         
 
    function toggleCbox() {
@@ -1496,95 +1505,8 @@ const firebaseConfig = {
 
 
 
-// --- ADMIN CONFIGURATION ---
-const ADMIN_EMAIL = "vajirarathnayaka529@gmail.com"; // Change to your login email
-const ADMIN_SECRET_KEY = "Vajira2003@"; // Change to your chosen system password
-
-// Toggle Dropdown
-function toggleNotifications() {
-    const dropdown = document.getElementById('notification-dropdown');
-    const dot = document.getElementById('nav-red-dot');
-    
-    if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-    } else {
-        dropdown.style.display = 'block';
-        dot.style.display = 'none'; // Hide red dot when user clicks
-    }
-}
-
-// Check if logged in user is admin
-function checkAdminAccess(email) {
-    if(email.toUpperCase() === ADMIN_EMAIL.toUpperCase()) {
-        document.getElementById('admin-panel').style.display = 'block';
-        console.log("ADMIN_MODULE_ACTIVATED");
-    }
-}
-
-// Override your existing unlockSystem to include the admin check
-const originalUnlock = unlockSystem;
-unlockSystem = function(username) {
-    originalUnlock(username); // Call original
-    const user = firebase.auth().currentUser;
-    if(user) checkAdminAccess(user.email);
-};
-
-// Send Notification to Firebase
-function sendGlobalNotification() {
-    const msg = document.getElementById('admin-notif-msg').value;
-    const date = document.getElementById('admin-notif-date').value;
-    const pass = document.getElementById('admin-system-pass').value;
-    const status = document.getElementById('admin-status');
-
-    if(!msg || !date) return alert("FIELDS_REQUIRED");
-
-    if(pass !== ADMIN_SECRET_KEY) {
-        status.innerText = "> ACCESS_DENIED: INVALID_SYSTEM_KEY";
-        status.style.color = "var(--pink)";
-        return;
-    }
-
-    db.ref('system/notifications').push({
-        message: msg,
-        timestamp: date,
-        type: "SYSTEM_BROADCAST"
-    }).then(() => {
-        status.innerText = "> BROADCAST_SENT_SUCCESSFULLY";
-        status.style.color = "var(--cyan)";
-        document.getElementById('admin-notif-msg').value = "";
-        document.getElementById('admin-system-pass').value = "";
-    });
-}
-
-// Firebase Listener (Runs for EVERYONE)
-db.ref('system/notifications').limitToLast(10).on('value', (snapshot) => {
-    const content = document.getElementById('notif-content');
-    const dot = document.getElementById('nav-red-dot');
-    content.innerHTML = ""; 
-
-    snapshot.forEach((child) => {
-        const data = child.val();
-        const html = `
-            <div class="notif-item">
-                <span class="notif-time">${data.timestamp}</span>
-                <div class="notif-text">${data.message}</div>
-            </div>
-        `;
-        content.insertAdjacentHTML('afterbegin', html);
-    });
-
-    // Show the red dot for all users when a new notification arrives
-    dot.style.display = 'block';
-});
-
-
-
-
-
-
-
-
         
+
 // --- 2. INITIALIZE FIREBASE FIRST ---
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -2063,6 +1985,94 @@ initBattery();
             document.getElementById('view-title').innerHTML = `Vajira<br>${titles[viewId]}`;
             toggleMenu();
         }
+
+
+
+
+
+// --- NOTIFICATION CONFIGURATION ---
+const ADMIN_EMAIL = "vajirarathnayaka529@gmail.com"; // Set your login email
+const ADMIN_SYSTEM_KEY = "Vajira2003@";      // Set your broadcast password
+
+// Toggle Visibility
+function toggleNotifications() {
+    const dropdown = document.getElementById('notification-dropdown');
+    const dot = document.getElementById('nav-red-dot');
+    
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        dropdown.style.display = 'block';
+        dot.style.display = 'none'; // Clear red dot when viewed
+    }
+}
+
+// Override existing unlockSystem to show Admin Panel if user matches
+const originalUnlock = unlockSystem;
+unlockSystem = function(username) {
+    originalUnlock(username);
+    
+    // Check if logged in user is the Admin
+    const user = auth.currentUser;
+    if(user && user.email && user.email.toUpperCase() === ADMIN_EMAIL.toUpperCase()) {
+        document.getElementById('admin-panel').style.display = 'block';
+        console.log("ADMIN_SESSION_STARTED");
+    }
+};
+
+// Send Broadcast to Firebase
+function sendGlobalNotification() {
+    const msg = document.getElementById('admin-notif-msg').value;
+    const date = document.getElementById('admin-notif-date').value;
+    const key = document.getElementById('admin-system-pass').value;
+    const status = document.getElementById('admin-status');
+
+    if(!msg || !date) return alert("FIELDS_EMPTY");
+
+    if(key !== ADMIN_SYSTEM_KEY) {
+        status.innerText = "> ACCESS_DENIED: WRONG_SYSTEM_KEY";
+        status.style.color = "var(--pink)";
+        return;
+    }
+
+    db.ref('system/notifications').push({
+        message: msg,
+        timestamp: date,
+        type: "ADMIN_BROADCAST"
+    }).then(() => {
+        status.innerText = "> BROADCAST_SENT_SUCCESSFULLY";
+        status.style.color = "var(--cyan)";
+        document.getElementById('admin-notif-msg').value = "";
+        document.getElementById('admin-system-pass').value = "";
+    });
+}
+
+// Live Firebase Listener (For all users)
+db.ref('system/notifications').limitToLast(10).on('value', (snapshot) => {
+    const content = document.getElementById('notif-content');
+    const dot = document.getElementById('nav-red-dot');
+    content.innerHTML = ""; 
+
+    snapshot.forEach((child) => {
+        const data = child.val();
+        const html = `
+            <div class="notif-item">
+                <span class="notif-time">${data.timestamp}</span>
+                <div class="notif-text">${data.message}</div>
+            </div>
+        `;
+        content.insertAdjacentHTML('afterbegin', html);
+    });
+
+    // Show the red dot to everyone when a new notification is added
+    dot.style.display = 'block';
+});
+
+
+
+
+
+        
     </script>
 
 
