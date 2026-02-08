@@ -36,6 +36,112 @@
 
 
 
+
+/* Notification Container */
+.notification-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#notification-trigger {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    padding: 10px;
+    color: var(--cyan);
+    cursor: pointer;
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+    position: relative;
+}
+
+#notification-trigger:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+/* The Red Dot */
+.notification-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    background: #ff0055; /* Cyber Red */
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ff0055;
+    display: block; /* Show by default for new updates */
+}
+
+/* Dropdown Window */
+.notif-dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: 300px;
+    background: rgba(5, 8, 15, 0.98);
+    border: 1px solid var(--cyan);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: none; /* Controlled by JS */
+    z-index: 1000;
+}
+
+.notif-header {
+    padding: 12px;
+    font-family: 'JetBrains Mono';
+    font-size: 0.7rem;
+    color: var(--cyan);
+    border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+    letter-spacing: 2px;
+}
+
+.notif-body {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    padding: 15px;
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+}
+
+.notif-item:hover {
+    background: rgba(0, 242, 255, 0.05);
+}
+
+.notif-item.unread {
+    border-left: 2px solid var(--pink);
+}
+
+.notif-item i {
+    color: var(--cyan);
+    font-size: 0.9rem;
+    margin-top: 3px;
+}
+
+.notif-text p {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+}
+
+.notif-time {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--pink);
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono';
+}
+
+
+
+
+        
+
+
 .auth-portal {
     width: 380px;
     height: 550px;
@@ -941,16 +1047,38 @@
     
 
 
+
 <div id="top-status-bar">
     <div class="status-connection">
         <span class="pulse-dot"></span>
         <span id="user-status-text">GUEST_MODE</span>
+    </div>
+
+    <div class="notification-wrapper">
+        <button id="notification-trigger" onclick="toggleNotifications()">
+            <i class="fas fa-bell"></i>
+            <span id="nav-red-dot" class="notification-dot"></span>
+        </button>
+        <div id="notification-dropdown" class="notif-dropdown">
+            <div class="notif-header">SYSTEM_NOTIFICATIONS</div>
+            <div id="notif-content" class="notif-body">
+                <div class="notif-item unread">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="notif-text">
+                        <span class="notif-time">JUST NOW</span>
+                        <p>SYSTEM_UPDATE: Vajira Core v.2.6.0 is now live.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <button id="login-trigger" onclick="openLogin()">
         <i class="fas fa-user-circle"></i>
         <span>LOGIN</span>
     </button>
 </div>
+
+
 
 
 
@@ -1301,6 +1429,27 @@
 
 
 
+function toggleNotifications() {
+    const dropdown = document.getElementById('notification-dropdown');
+    const dot = document.getElementById('nav-red-dot');
+    
+    // Toggle the visibility
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        dropdown.style.display = 'block';
+        // Once opened, hide the red dot
+        dot.style.display = 'none';
+    }
+}
+
+// Close dropdown if user clicks outside
+window.onclick = function(event) {
+    if (!event.target.closest('.notification-wrapper')) {
+        const dropdown = document.getElementById('notification-dropdown');
+        if (dropdown) dropdown.style.display = 'none';
+    }
+}
 
   
         
